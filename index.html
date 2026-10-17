@@ -1,683 +1,528 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#eef4ff">
-<meta name="color-scheme" content="light">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Facebook Web</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#18251b">
+<title>FIELD OPS — Mobile Shooter</title>
 
 <style>
-:root {
-  --blue:#0866ff;
-  --blue2:#398cff;
-  --ink:#172033;
-  --muted:#7c879a;
-  --glass:rgba(255,255,255,.68);
-  --stroke:rgba(255,255,255,.94);
-  --shadow:0 12px 38px rgba(40,70,120,.09);
-  --radius:25px;
-}
-* {box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html {min-height:100%;scroll-behavior:smooth}
-body {
-  margin:0;
-  min-height:100vh;
-  min-height:100dvh;
-  padding:calc(env(safe-area-inset-top) + 10px) 16px
-    calc(94px + env(safe-area-inset-bottom));
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
-    "Helvetica Neue",sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(ellipse at 0% 0%,#d6e6ff 0%,transparent 43%),
-    radial-gradient(ellipse at 100% 22%,#e6e8ff 0%,transparent 36%),
-    linear-gradient(160deg,#f8faff,#edf3fc 75%,#f5f7fd);
-  -webkit-font-smoothing:antialiased;
-}
-a,button,input {font:inherit}
-a {color:inherit;text-decoration:none}
-button {cursor:pointer}
-button:focus-visible,a:focus-visible,input:focus-visible {
-  outline:3px solid #86b5ff;outline-offset:3px;
-}
-.app {width:100%;max-width:650px;margin:auto}
-.glass {
-  border:1px solid var(--stroke);
-  background:var(--glass);
-  -webkit-backdrop-filter:blur(25px) saturate(175%);
-  backdrop-filter:blur(25px) saturate(175%);
-  box-shadow:var(--shadow);
-}
-.topbar {
-  display:flex;align-items:center;gap:12px;
-  padding:11px 13px;border-radius:22px;
-}
-.logo {
-  display:grid;place-items:center;width:44px;height:44px;
-  flex-shrink:0;border-radius:16px;overflow:hidden;
-  color:white;background:linear-gradient(145deg,#55a0ff,#0866ff);
-  box-shadow:0 6px 18px #0866ff30;
-}
-.logo span {font:bold 45px Arial,sans-serif;margin:10px 0 -7px}
-.brand {flex:1;min-width:0}
-.brand strong {display:block;font-size:15px;letter-spacing:-.3px}
-.brand small {display:block;margin-top:4px;font-size:11px;color:var(--muted)}
-.live {
-  padding:8px 10px;border-radius:30px;
-  color:#267448;background:#eaf8ef;
-  font-size:10px;font-weight:750;white-space:nowrap;
-}
-main {padding-top:18px}
-.page {display:none;animation:appear .28s ease both}
-.page.active {display:block}
-@keyframes appear {
-  from {opacity:0;transform:translateY(6px)}
-  to {opacity:1;transform:translateY(0)}
-}
-.hero {
-  position:relative;isolation:isolate;overflow:hidden;
-  padding:29px 23px 23px;border-radius:30px;
-}
-.hero:before {
-  position:absolute;z-index:-1;content:"";
-  width:240px;height:240px;right:-100px;top:-100px;
-  border-radius:50%;
-  background:radial-gradient(circle,#a9ceffb0,transparent 70%);
-}
-.eyebrow {
-  display:inline-flex;align-items:center;gap:7px;
-  padding:8px 11px;border-radius:30px;
-  color:#155bc5;background:#eaf2ff;
-  font-size:10px;font-weight:800;letter-spacing:.65px;
-}
-h1 {
-  margin:21px 0 13px;font-size:clamp(40px,10vw,53px);
-  line-height:.98;letter-spacing:-2.8px;font-weight:780;
-}
-.blue {color:var(--blue)}
-.intro {
-  max-width:410px;margin:0;color:#657188;
-  font-size:14px;line-height:1.75;
-}
-.primary {
-  display:flex;align-items:center;justify-content:center;
-  gap:10px;min-height:56px;margin-top:23px;padding:15px;
-  border:1px solid #ffffff50;border-radius:18px;
-  color:white;background:linear-gradient(130deg,#398eff,#0866ff 75%);
-  box-shadow:0 10px 25px #0866ff30;
-  font-size:14px;font-weight:750;
-  transition:transform .18s,box-shadow .18s;
-}
-.primary:active {transform:scale(.985);box-shadow:0 4px 12px #0866ff20}
-.arrow {margin-left:auto;font-size:20px}
-.safe-note {
-  display:flex;align-items:flex-start;gap:9px;
-  margin-top:15px;color:#7a869a;font-size:11px;line-height:1.65;
-}
-.heading {
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;margin:27px 3px 13px;
-}
-.heading h2 {margin:0;font-size:17px;letter-spacing:-.4px}
-.heading small {color:var(--muted);font-size:10px}
-.grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.tile {
-  display:flex;align-items:center;gap:11px;
-  min-width:0;min-height:79px;padding:13px;border-radius:21px;
-  transition:transform .17s;
-}
-.tile:active {transform:scale(.98)}
-.tile-icon {
-  display:grid;place-items:center;width:41px;height:41px;
-  flex-shrink:0;border-radius:15px;
-  border:1px solid #dfebff;color:#1766e9;
-  background:linear-gradient(145deg,#f8fbff,#e7f0ff);
-  font-size:19px;
-}
-.tile-copy {flex:1;min-width:0}
-.tile-copy strong {display:block;font-size:12px;font-weight:740}
-.tile-copy small {display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4}
-.chevron {color:#9ba8ba;font-size:20px}
-.panel {margin-top:17px;padding:18px;border-radius:24px}
-.panel-head {display:flex;align-items:center;gap:11px}
-.panel-icon {
-  display:grid;place-items:center;width:40px;height:40px;
-  flex-shrink:0;border-radius:14px;
-  color:#1766e9;background:#eaf2ff;font-size:18px;
-}
-.panel-head strong {display:block;font-size:14px}
-.panel-head small {display:block;margin-top:4px;color:var(--muted);font-size:11px}
-.description {margin:12px 0 0;color:#748096;font-size:12px;line-height:1.7}
-.field-label {display:block;margin:17px 0 7px;font-size:11px;font-weight:700;color:#58667c}
-.field {
-  width:100%;min-height:47px;padding:12px 14px;
-  border:1px solid #dce5f2;border-radius:14px;
-  background:#ffffffb8;color:var(--ink);font-size:13px;
-}
-.field::placeholder {color:#a0aabc}
-.field:focus {border-color:#86b4ff;outline:none;box-shadow:0 0 0 3px #0866ff12}
-.action {
-  display:flex;align-items:center;justify-content:center;gap:7px;
-  width:100%;min-height:46px;margin-top:12px;padding:12px;
-  border:0;border-radius:15px;color:white;background:var(--blue);
-  font-size:13px;font-weight:750;
-}
-.action.secondary {
-  color:#155ac4;background:#edf4ff;border:1px solid #dbe8ff;
-}
-.message {min-height:17px;margin-top:10px;color:#287447;font-size:11px;line-height:1.5}
-.saved-list {display:grid;gap:9px;margin-top:14px}
-.empty {
-  padding:18px 12px;border:1px dashed #d5dfed;
-  border-radius:17px;color:#8490a3;text-align:center;
-  font-size:12px;line-height:1.65;
-}
-.account {
-  display:flex;align-items:center;gap:10px;min-width:0;
-  padding:11px;border:1px solid #e3eaf5;
-  border-radius:17px;background:#ffffffa6;
-}
-.avatar {
-  display:grid;place-items:center;width:38px;height:38px;
-  flex-shrink:0;border-radius:50%;color:#1766e9;
-  background:#e8f1ff;font-size:16px;font-weight:800;
-}
-.account-info {flex:1;min-width:0}
-.account-info strong {display:block;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
-.account-info small {display:block;overflow:hidden;margin-top:4px;color:var(--muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
-.account-buttons {display:flex;gap:5px;flex-shrink:0}
-.mini {
-  min-height:34px;padding:7px 9px;border:1px solid #dce8fa;
-  border-radius:11px;color:#155ac4;background:#f0f6ff;
-  font-size:11px;font-weight:700;
-}
-.mini.remove {color:#a13d4b;border-color:#f1d9dc;background:#fff4f5}
-.empty-button {
-  padding:10px 12px;border:1px solid #dce8fa;
-  border-radius:13px;color:#155ac4;background:#edf4ff;font-size:12px;
-}
-.feature-list {display:grid;gap:13px;margin-top:18px}
-.feature {display:flex;align-items:flex-start;gap:11px}
-.feature-mark {
-  display:grid;place-items:center;width:30px;height:30px;
-  flex-shrink:0;border-radius:11px;color:#1766e9;background:#eaf2ff;
-}
-.feature strong {display:block;font-size:12px}
-.feature p {margin:5px 0 0;color:#748096;font-size:11px;line-height:1.65}
-.inline-link {color:#155ac4;font-weight:750}
-.bottom-nav {
-  position:fixed;z-index:10;left:50%;
-  bottom:calc(10px + env(safe-area-inset-bottom));
-  transform:translateX(-50%);
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  width:min(calc(100% - 30px),450px);gap:5px;
-  padding:7px;border-radius:24px;
-  border:1px solid #ffffffd9;background:rgba(255,255,255,.79);
-  -webkit-backdrop-filter:blur(28px) saturate(180%);
-  backdrop-filter:blur(28px) saturate(180%);
-  box-shadow:0 10px 35px #29487520;
-}
-.nav-button {
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;min-height:51px;padding:6px;border:0;border-radius:17px;
-  color:#8490a3;background:transparent;font-size:10px;font-weight:650;
-  transition:background .2s,color .2s;
-}
-.nav-button .nav-icon {font-size:20px;line-height:1}
-.nav-button.active {color:#0866ff;background:#eaf2ff}
-footer {padding:22px 8px 0;color:#8591a5;font-size:10px;line-height:1.9;text-align:center}
-footer a {color:#526d95;font-weight:650}
-@media(min-width:560px) {
-  body {padding-left:22px;padding-right:22px}
-  .hero {padding:36px 34px 30px}
-  .grid {grid-template-columns:repeat(4,minmax(0,1fr))}
-  .tile {flex-direction:column;align-items:flex-start;min-height:120px;padding:15px}
-  .chevron {display:none}
-}
-@media(prefers-reduced-motion:reduce) {
-  *,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}
-}
+:root{--lime:#c7f36b;--panel:#101912dd;--white:#f3f6ee}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#17271c;color:var(--white);font-family:system-ui,-apple-system,sans-serif;touch-action:none;user-select:none}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#hud{position:fixed;inset:0;pointer-events:none}
+.top{position:absolute;top:max(12px,env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:space-between}
+.panel{background:var(--panel);border:1px solid #ffffff24;border-radius:12px;padding:9px 12px;backdrop-filter:blur(8px)}
+.brand{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:900}
+.stat{font-size:12px;font-weight:800;margin-top:4px}
+.health{width:120px;height:5px;background:#ffffff22;border-radius:9px;margin-top:6px;overflow:hidden}
+#healthbar{height:100%;width:100%;background:var(--lime)}
+#status{position:absolute;top:84px;left:50%;transform:translateX(-50%);background:#101912c9;border-radius:8px;padding:6px 10px;font-size:10px;letter-spacing:1px;white-space:nowrap}
+#crosshair{position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%)}
+#crosshair:before,#crosshair:after{content:"";position:absolute;background:white;box-shadow:0 1px 3px #000}
+#crosshair:before{width:2px;height:22px;left:10px}
+#crosshair:after{height:2px;width:22px;top:10px}
+#bottomHud{position:absolute;left:12px;bottom:max(12px,env(safe-area-inset-bottom))}
+#weapon{font-size:14px;font-weight:900}
+#ammo{font-size:21px;font-weight:900;color:var(--lime);margin-top:3px}
+#hint{font-size:9px;color:#bfcbbc;margin-top:4px}
+.stick{position:fixed;bottom:max(32px,calc(env(safe-area-inset-bottom) + 24px));width:120px;height:120px;border-radius:50%;background:#ffffff12;border:1px solid #ffffff38;touch-action:none}
+#moveStick{left:22px}#aimStick{right:22px}
+.knob{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:#d8e5d066;border:2px solid #eef6e6aa}
+.controlLabel{position:absolute;bottom:-19px;left:0;right:0;text-align:center;font-size:9px;letter-spacing:1px;color:#ffffffaa;font-weight:900}
+#fire{position:fixed;right:33px;bottom:max(168px,calc(env(safe-area-inset-bottom) + 164px));width:76px;height:76px;border-radius:50%;border:2px solid #ffffff99;background:linear-gradient(145deg,#e6ff9c,#8cbd37);color:#17200f;font-weight:1000;touch-action:none}
+#reload{position:fixed;right:44px;bottom:max(116px,calc(env(safe-area-inset-bottom) + 110px));width:54px;height:40px;border-radius:11px;border:1px solid #ffffff55;background:#101912e8;color:white;font-weight:900;font-size:10px;touch-action:none}
+#startScreen,#endScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(130deg,#101912ed,#101912a9);z-index:10}
+.modal{width:min(410px,100%);border:1px solid #ffffff2b;border-radius:20px;padding:23px;background:linear-gradient(160deg,#243127f7,#0a100df7);box-shadow:0 20px 70px #0009}
+.kicker{font-size:10px;letter-spacing:3px;color:var(--lime);font-weight:900}
+h1{font-size:clamp(36px,10vw,54px);line-height:.94;margin:12px 0;letter-spacing:-2px}
+.sub{font-size:13px;color:#c8d1c7;line-height:1.6}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:17px 0}
+.feature{border:1px solid #ffffff18;background:#ffffff08;padding:10px;border-radius:9px;font-size:11px;color:#e4e9df}
+.feature b{display:block;color:var(--lime);font-size:11px;margin-bottom:4px}
+.primary{width:100%;border:0;border-radius:11px;background:var(--lime);color:#17200f;padding:15px;font-weight:1000;letter-spacing:1px}
+.smallprint{font-size:10px;color:#9aa79b;line-height:1.5;margin-top:12px}
+#toast{position:fixed;top:24%;left:50%;transform:translateX(-50%);background:#111a14ed;border:1px solid #ffffff33;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:900;opacity:0;transition:opacity .12s;pointer-events:none;z-index:20;white-space:nowrap}
+@media(min-width:800px){.stick{width:140px;height:140px}#moveStick{left:35px}#aimStick{right:35px}#fire{right:55px}#reload{right:65px}}
 </style>
 </head>
 
 <body>
-<div class="app">
+<canvas id="game"></canvas>
 
-  <header class="topbar glass">
-    <div class="logo" aria-hidden="true"><span>f</span></div>
-    <div class="brand">
-      <strong>Facebook Web</strong>
-      <small>Your social space inside Telegram</small>
-    </div>
-    <div class="live">● Web access</div>
-  </header>
+<div id="hud">
+ <div class="top">
+  <div class="panel">
+   <div class="brand">FIELD OPS / TRAINING</div>
+   <div class="stat">HP <span id="hp">100</span></div>
+   <div class="health"><div id="healthbar"></div></div>
+  </div>
+  <div class="panel" style="text-align:right">
+   <div class="brand">ELIMINATIONS</div>
+   <div class="stat"><span id="kills">0</span> / 12</div>
+   <div class="stat" style="color:var(--lime)">WAVE 01</div>
+  </div>
+ </div>
 
-  <main>
-    <!-- HOME -->
-    <section class="page active" id="page-home">
-      <div class="hero glass">
-        <div class="eyebrow">✦ YOUR SOCIAL SPACE</div>
-        <h1>Facebook,<br><span class="blue">your way.</span></h1>
-        <p class="intro">
-          Your shortcut to the real Facebook website,
-          with a cleaner interface designed for your phone.
-        </p>
+ <div id="status">CLEAR THE AREA</div>
+ <div id="crosshair"></div>
 
-        <a class="primary" href="https://www.facebook.com/" target="_self">
-          Continue to Facebook <span class="arrow">↗</span>
-        </a>
-
-        <div class="safe-note">
-          <span>◈</span>
-          <span>Sign in only on the genuine Facebook website.
-          This shortcut page never asks for your password.</span>
-        </div>
-      </div>
-
-      <div class="heading">
-        <h2>Quick access</h2>
-        <small>Go straight to</small>
-      </div>
-
-      <div class="grid">
-        <a class="tile glass" href="https://www.facebook.com/" target="_self">
-          <span class="tile-icon">⌂</span>
-          <span class="tile-copy"><strong>Home</strong><small>Your news feed</small></span>
-          <span class="chevron">›</span>
-        </a>
-        <a class="tile glass" href="https://www.facebook.com/friends/" target="_self">
-          <span class="tile-icon">♧</span>
-          <span class="tile-copy"><strong>Friends</strong><small>Find your people</small></span>
-          <span class="chevron">›</span>
-        </a>
-        <a class="tile glass" href="https://www.facebook.com/messages/" target="_self">
-          <span class="tile-icon">◌</span>
-          <span class="tile-copy"><strong>Messages</strong><small>Your conversations</small></span>
-          <span class="chevron">›</span>
-        </a>
-        <a class="tile glass" href="https://www.facebook.com/marketplace/" target="_self">
-          <span class="tile-icon">▣</span>
-          <span class="tile-copy"><strong>Market</strong><small>Browse listings</small></span>
-          <span class="chevron">›</span>
-        </a>
-      </div>
-
-      <div class="panel glass">
-        <div class="panel-head">
-          <div class="panel-icon">↗</div>
-          <div>
-            <strong>New to Facebook?</strong>
-            <small>Start with the official website</small>
-          </div>
-        </div>
-        <p class="description">
-          Create an account directly on Facebook. No extra steps here.
-        </p>
-        <a class="action secondary" href="https://www.facebook.com/reg/" target="_self">
-          Create an account ↗
-        </a>
-      </div>
-
-      <footer>
-        Independent web shortcut · Not affiliated with Meta.<br>
-        <a href="https://www.facebook.com/" target="_self">facebook.com ↗</a>
-      </footer>
-    </section>
-
-    <!-- SAVED ACCOUNTS -->
-    <section class="page" id="page-saved">
-      <div class="hero glass">
-        <div class="eyebrow">✦ YOUR PERSONAL SPACE</div>
-        <h1>Saved<br><span class="blue">accounts.</span></h1>
-        <p class="intro">
-          Keep your favourite Facebook profile links together
-          and open them whenever you need them.
-        </p>
-      </div>
-
-      <div class="panel glass">
-        <div class="panel-head">
-          <div class="panel-icon">＋</div>
-          <div>
-            <strong>Add a shortcut</strong>
-            <small>Name and profile link only</small>
-          </div>
-        </div>
-
-        <form id="account-form">
-          <label class="field-label" for="account-name">Account name</label>
-          <input class="field" id="account-name" maxlength="50"
-            placeholder="My personal account" autocomplete="off" required>
-
-          <label class="field-label" for="account-url">Facebook profile URL</label>
-          <input class="field" id="account-url" type="url" inputmode="url"
-            maxlength="500" placeholder="https://www.facebook.com/..." required>
-
-          <button class="action" type="submit">＋ Save shortcut</button>
-        </form>
-        <div class="message" id="save-message" role="status" aria-live="polite"></div>
-      </div>
-
-      <div class="heading">
-        <h2>Your shortcuts</h2>
-        <small id="account-count">0 saved</small>
-      </div>
-      <div class="saved-list" id="saved-list"></div>
-
-      <div class="panel glass">
-        <div class="panel-head">
-          <div class="panel-icon">◈</div>
-          <div>
-            <strong>Privacy first</strong>
-            <small>No password storage</small>
-          </div>
-        </div>
-        <p class="description">
-          Shortcuts are saved in this browser's local storage when available.
-          They are not synced between devices. Never save passwords,
-          authentication codes or recovery codes here.
-        </p>
-      </div>
-    </section>
-
-    <!-- ABOUT / SETTINGS -->
-    <section class="page" id="page-more">
-      <div class="hero glass">
-        <div class="eyebrow">✦ SIMPLE BY DESIGN</div>
-        <h1>Made for<br><span class="blue">your flow.</span></h1>
-        <p class="intro">
-          A lightweight home for your Facebook web shortcuts,
-          with a consistent look across the pages this app controls.
-        </p>
-      </div>
-
-      <div class="panel glass">
-        <div class="panel-head">
-          <div class="panel-icon">◈</div>
-          <div>
-            <strong>About this app</strong>
-            <small>An independent shortcut, not Facebook</small>
-          </div>
-        </div>
-
-        <div class="feature-list">
-          <div class="feature">
-            <span class="feature-mark">✦</span>
-            <div>
-              <strong>Glass-inspired design</strong>
-              <p>Translucent panels, soft depth, clean typography and mobile-friendly spacing.</p>
-            </div>
-          </div>
-          <div class="feature">
-            <span class="feature-mark">↗</span>
-            <div>
-              <strong>Website-first links</strong>
-              <p>Links navigate in the current view and do not deliberately call the Facebook app.</p>
-            </div>
-          </div>
-          <div class="feature">
-            <span class="feature-mark">♙</span>
-            <div>
-              <strong>Local saved shortcuts</strong>
-              <p>Save profile links without collecting passwords or sign-in codes.</p>
-            </div>
-          </div>
-          <div class="feature">
-            <span class="feature-mark">⌁</span>
-            <div>
-              <strong>Telegram-aware</strong>
-              <p>Uses Telegram Mini App layout features when the environment supports them.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel glass">
-        <div class="panel-head">
-          <div class="panel-icon">ⓘ</div>
-          <div>
-            <strong>Browser limitations</strong>
-            <small>What this app can and cannot control</small>
-          </div>
-        </div>
-        <p class="description">
-          Facebook controls the appearance and behaviour of its actual pages.
-          Telegram, iOS or Facebook may open a different view or restrict
-          sign-in in an embedded browser. This app cannot override those rules.
-        </p>
-        <a class="action secondary" href="https://www.facebook.com/" target="_self">
-          Visit Facebook ↗
-        </a>
-      </div>
-    </section>
-  </main>
+ <div id="bottomHud" class="panel">
+  <div class="brand">ASSAULT RIFLE</div>
+  <div id="weapon">AR-7</div>
+  <div id="ammo"><span id="ammoText">30</span> <span style="font-size:12px;color:#aeb9ad">/ <span id="reserve">120</span></span></div>
+  <div id="hint">AUTO FIRE · HEADSHOTS DEAL BONUS DAMAGE</div>
+ </div>
 </div>
 
-<!-- GLASS BOTTOM NAVIGATION -->
-<nav class="bottom-nav" aria-label="Main navigation">
-  <button class="nav-button active" data-page="home" aria-current="page">
-    <span class="nav-icon">⌂</span><span>Home</span>
-  </button>
-  <button class="nav-button" data-page="saved">
-    <span class="nav-icon">♙</span><span>Saved</span>
-  </button>
-  <button class="nav-button" data-page="more">
-    <span class="nav-icon">⋯</span><span>More</span>
-  </button>
-</nav>
+<div id="moveStick" class="stick">
+ <div class="knob"></div><div class="controlLabel">MOVE</div>
+</div>
+<div id="aimStick" class="stick">
+ <div class="knob"></div><div class="controlLabel">AIM</div>
+</div>
+<button id="fire">FIRE</button>
+<button id="reload">RELOAD</button>
+<div id="toast"></div>
+
+<div id="startScreen">
+ <div class="modal">
+  <div class="kicker">MOBILE COMBAT SIMULATOR</div>
+  <h1>FIELD<br>OPS<span style="color:var(--lime)">.</span></h1>
+  <div class="sub">Enter the training zone. Use cover, aim carefully, and eliminate the enemy squad.</div>
+  <div class="features">
+   <div class="feature"><b>01 / MOVE</b>Use the left joystick to move.</div>
+   <div class="feature"><b>02 / AIM</b>Use the right joystick to aim.</div>
+   <div class="feature"><b>03 / COMBAT</b>Hold FIRE to shoot. Headshots deal extra damage.</div>
+   <div class="feature"><b>04 / COVER</b>Buildings, cars and walls block movement and bullets.</div>
+  </div>
+  <button id="startBtn" class="primary">ENTER TRAINING ZONE</button>
+  <div class="smallprint">For sound, upload <b>dragon-studio-gunshot-372470.mp3</b> into the same GitHub folder as this file.</div>
+ </div>
+</div>
+
+<div id="endScreen" style="display:none">
+ <div class="modal">
+  <div class="kicker">MISSION REPORT</div>
+  <h1 id="endTitle">MISSION<br>COMPLETE<span style="color:var(--lime)">.</span></h1>
+  <div id="endText" class="sub">Training finished.</div><br>
+  <button id="againBtn" class="primary">PLAY AGAIN</button>
+ </div>
+</div>
+
+<!-- Keep this MP3 beside index.html in the GitHub repository -->
+<audio id="gunshot" preload="auto" src="./dragon-studio-gunshot-372470.mp3"></audio>
 
 <script>
-(function () {
-  "use strict";
+(() => {
+"use strict";
 
-  // Telegram Mini App setup. The website also works outside Telegram.
-  try {
-    var tg = window.Telegram && window.Telegram.WebApp;
-    if (tg) {
-      tg.ready();
-      if (typeof tg.expand === "function") tg.expand();
-      if (typeof tg.setHeaderColor === "function") tg.setHeaderColor("#eef4ff");
-      if (typeof tg.setBackgroundColor === "function") tg.setBackgroundColor("#eef4ff");
-    }
-  } catch (e) {}
+const $ = id => document.getElementById(id);
+const canvas = $("game");
+const ctx = canvas.getContext("2d");
 
-  // Simple internal navigation.
-  var pageNames = ["home", "saved", "more"];
-  var navButtons = document.querySelectorAll(".nav-button");
+let W=innerWidth,H=innerHeight,DPR=1;
+let worldW=2200,worldH=1600,camX=0,camY=0;
+let player,enemies=[],bullets=[],particles=[],obstacles=[];
+let playing=false,ended=false,fireHeld=false,reloading=false;
+let kills=0,ammo=30,reserve=120,lastShot=0,lastTime=0;
+let reloadTimer=0,toastTimer=0;
+let move={x:0,y:0},aim={x:1,y:0},aimStick={x:0,y:0};
+let keys={};
 
-  function showPage(name, updateHash) {
-    if (pageNames.indexOf(name) === -1) name = "home";
+function resize(){
+ DPR=Math.min(devicePixelRatio||1,2);
+ W=innerWidth;H=innerHeight;
+ canvas.width=Math.round(W*DPR);
+ canvas.height=Math.round(H*DPR);
+ canvas.style.width=W+"px";canvas.style.height=H+"px";
+ ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+addEventListener("resize",resize);resize();
 
-    document.querySelectorAll(".page").forEach(function (page) {
-      page.classList.toggle("active", page.id === "page-" + name);
+function rand(a,b){return a+Math.random()*(b-a)}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function roundRect(x,y,w,h,r,fill=true){
+ ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill)ctx.fill();
+}
+
+function makeMap(){
+ obstacles=[];
+ function house(x,y,w,h){
+  obstacles.push({x,y,w,h,type:"house"});
+ }
+ function car(x,y,w,h){
+  obstacles.push({x,y,w,h,type:"car"});
+ }
+ function wall(x,y,w,h){
+  obstacles.push({x,y,w,h,type:"wall"});
+ }
+
+ house(330,240,250,170);
+ house(780,190,220,190);
+ house(1320,260,300,180);
+ house(250,790,300,210);
+ house(850,720,230,250);
+ house(1430,820,260,200);
+ house(1780,390,220,230);
+ house(1750,1120,250,190);
+
+ car(650,500,86,42);
+ car(1130,410,88,42);
+ car(1240,1050,88,42);
+ car(650,1190,88,42);
+ car(1840,760,86,42);
+
+ wall(630,250,100,20);
+ wall(1110,250,130,20);
+ wall(1130,850,20,110);
+ wall(690,900,110,20);
+ wall(1580,620,100,20);
+ wall(1080,1260,150,20);
+ wall(300,600,20,110);
+ wall(1980,650,20,100);
+}
+
+function circleRect(cx,cy,r,o){
+ let x=clamp(cx,o.x,o.x+o.w);
+ let y=clamp(cy,o.y,o.y+o.h);
+ return (cx-x)**2+(cy-y)**2<r*r;
+}
+function blocked(x,y,r){
+ if(x<r||y<r||x>worldW-r||y>worldH-r)return true;
+ return obstacles.some(o=>circleRect(x,y,r,o));
+}
+function moveEntity(e,dx,dy,r){
+ let nx=e.x+dx;
+ if(!blocked(nx,e.y,r))e.x=nx;
+ let ny=e.y+dy;
+ if(!blocked(e.x,ny,r))e.y=ny;
+}
+function lineHitsObstacle(x1,y1,x2,y2){
+ let d=Math.hypot(x2-x1,y2-y1);
+ let steps=Math.ceil(d/9);
+ for(let i=1;i<steps;i++){
+  let x=x1+(x2-x1)*i/steps;
+  let y=y1+(y2-y1)*i/steps;
+  if(obstacles.some(o=>x>=o.x&&x<=o.x+o.w&&y>=o.y&&y<=o.y+o.h))return true;
+ }
+ return false;
+}
+function toast(message){
+ $("toast").textContent=message;
+ $("toast").style.opacity=1;
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>$("toast").style.opacity=0,850);
+}
+function hud(){
+ $("hp").textContent=Math.max(0,Math.ceil(player?.hp||0));
+ $("healthbar").style.width=clamp(player?.hp||0,0,100)+"%";
+ $("kills").textContent=kills;
+ $("ammoText").textContent=ammo;
+ $("reserve").textContent=reserve;
+}
+function camera(){
+ camX=clamp(player.x-W/2,0,Math.max(0,worldW-W));
+ camY=clamp(player.y-H/2,0,Math.max(0,worldH-H));
+}
+function reset(){
+ makeMap();
+ player={x:1080,y:1430,r:16,hp:100,angle:-Math.PI/2,invuln:0};
+ bullets=[];particles=[];enemies=[];
+ kills=0;ammo=30;reserve=120;reloading=false;ended=false;
+ const spots=[
+  [170,180],[690,120],[1160,150],[1700,170],
+  [2050,500],[2050,980],[1400,620],[1110,570],
+  [720,620],[650,1050],[1160,1380],[2000,1400]
+ ];
+ spots.forEach((p,i)=>enemies.push({
+  x:p[0],y:p[1],r:15,hp:100,maxHp:100,
+  alive:true,angle:Math.PI/2,speed:rand(35,50),
+  cool:rand(.5,1.7),flash:0
+ }));
+ hud();camera();
+}
+function shotSound(){
+ const audio=$("gunshot");
+ if(!audio)return;
+ try{
+  audio.pause();audio.currentTime=0;
+  const p=audio.play();
+  if(p&&p.catch)p.catch(()=>{});
+ }catch(e){}
+}
+function shoot(now){
+ if(!playing||ended||reloading||now-lastShot<145)return;
+ if(ammo<=0){toast("EMPTY — RELOAD");return}
+ lastShot=now;ammo--;shotSound();
+ const angle=Math.atan2(aim.y,aim.x)+rand(-.025,.025);
+ bullets.push({
+  x:player.x+Math.cos(angle)*25,y:player.y+Math.sin(angle)*25,
+  vx:Math.cos(angle)*790,vy:Math.sin(angle)*790,
+  life:.65,playerShot:true
+ });
+ for(let i=0;i<5;i++)particles.push({
+  x:player.x+Math.cos(angle)*27,y:player.y+Math.sin(angle)*27,
+  vx:Math.cos(angle)*rand(40,150)+rand(-45,45),
+  vy:Math.sin(angle)*rand(40,150)+rand(-45,45),
+  life:.1,max:.1,color:"#ffe9a0",size:rand(2,4)
+ });
+ hud();
+}
+function reload(){
+ if(!playing||reloading||ammo>=30||reserve<=0)return;
+ reloading=true;reloadTimer=1.25;toast("RELOADING");
+}
+function finish(won){
+ ended=true;playing=false;fireHeld=false;
+ $("endScreen").style.display="flex";
+ $("endTitle").innerHTML=won
+  ?'AREA<br>CLEARED<span style="color:var(--lime)">.</span>'
+  :'MISSION<br>FAILED<span style="color:#ff705c">.</span>';
+ $("endText").textContent=won
+  ?"All 12 enemies eliminated. Training zone secured."
+  :"You were downed. Use cover and keep moving.";
+}
+function damagePlayer(amount){
+ if(player.invuln>0)return;
+ player.hp-=amount;player.invuln=.32;hud();
+ if(player.hp<=0)finish(false);
+}
+
+function update(dt,now){
+ if(!playing||ended)return;
+ if(reloading){
+  reloadTimer-=dt;
+  if(reloadTimer<=0){
+   const amount=Math.min(30-ammo,reserve);
+   ammo+=amount;reserve-=amount;reloading=false;hud();toast("READY");
+  }
+ }
+ let mx=move.x+(keys.KeyD?1:0)-(keys.KeyA?1:0);
+ let my=move.y+(keys.KeyS?1:0)-(keys.KeyW?1:0);
+ const ml=Math.hypot(mx,my);
+ if(ml>1){mx/=ml;my/=ml}
+ moveEntity(player,mx*235*dt,my*235*dt,player.r);
+
+ if(Math.hypot(aimStick.x,aimStick.y)>.18){
+  const al=Math.hypot(aimStick.x,aimStick.y);
+  aim={x:aimStick.x/al,y:aimStick.y/al};
+ }
+ player.angle=Math.atan2(aim.y,aim.x);
+ player.invuln=Math.max(0,player.invuln-dt);
+ if(fireHeld)shoot(now);
+
+ for(const e of enemies){
+  if(!e.alive)continue;
+  e.flash=Math.max(0,e.flash-dt);
+  e.cool-=dt;
+  const dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy);
+  e.angle=Math.atan2(dy,dx);
+  if(d>210&&!lineHitsObstacle(e.x,e.y,player.x,player.y)){
+   moveEntity(e,dx/(d||1)*e.speed*dt,dy/(d||1)*e.speed*dt,e.r);
+  }else if(d<145){
+   moveEntity(e,-dx/(d||1)*e.speed*.6*dt,-dy/(d||1)*e.speed*.6*dt,e.r);
+  }
+  if(d<500&&e.cool<=0&&!lineHitsObstacle(e.x,e.y,player.x,player.y)){
+   e.cool=rand(1.2,2.1);
+   const a=Math.atan2(dy,dx)+rand(-.12,.12);
+   bullets.push({x:e.x+Math.cos(a)*19,y:e.y+Math.sin(a)*19,
+    vx:Math.cos(a)*300,vy:Math.sin(a)*300,life:1.5,playerShot:false});
+  }
+ }
+ for(const b of bullets){
+  b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
+  if(b.playerShot){
+   for(const e of enemies){
+    if(!e.alive||Math.hypot(b.x-e.x,b.y-e.y)>e.r+3)continue;
+    const hx=e.x+Math.cos(e.angle)*8,hy=e.y+Math.sin(e.angle)*8;
+    const head=Math.hypot(b.x-hx,b.y-hy)<9;
+    e.hp-=head?125:55;e.flash=.12;b.life=0;
+    for(let i=0;i<7;i++)particles.push({
+     x:b.x,y:b.y,vx:rand(-100,100),vy:rand(-100,100),
+     life:.3,max:.3,color:head?"#ffe06e":"#dce7d9",size:rand(2,4)
     });
-
-    navButtons.forEach(function (button) {
-      var active = button.dataset.page === name;
-      button.classList.toggle("active", active);
-
-      if (active) button.setAttribute("aria-current", "page");
-      else button.removeAttribute("aria-current");
-    });
-
-    if (updateHash && location.hash !== "#" + name) {
-      history.replaceState(null, "", "#" + name);
-    }
-
-    window.scrollTo({top: 0, behavior: "smooth"});
+    toast(head?"HEADSHOT":"HIT");
+    if(e.hp<=0){e.alive=false;kills++;hud();if(kills>=12)finish(true)}
+    break;
+   }
+  }else if(Math.hypot(b.x-player.x,b.y-player.y)<player.r+4){
+   b.life=0;damagePlayer(8);
   }
+ }
+ bullets=bullets.filter(b=>b.life>0&&b.x>0&&b.y>0&&b.x<worldW&&b.y<worldH&&
+  !obstacles.some(o=>b.x>=o.x&&b.x<=o.x+o.w&&b.y>=o.y&&b.y<=o.y+o.h));
+ for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;p.vx*=.97;p.vy*=.97}
+ particles=particles.filter(p=>p.life>0);
+ camera();hud();
+}
 
-  navButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      showPage(button.dataset.page, true);
-    });
-  });
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ ctx.save();ctx.translate(-camX,-camY);
+ ctx.fillStyle="#293c2f";ctx.fillRect(0,0,worldW,worldH);
+ for(let x=0;x<worldW;x+=96)for(let y=0;y<worldH;y+=96){
+  if((x/96+y/96)%2===0){ctx.fillStyle="#304633";ctx.fillRect(x,y,96,96)}
+ }
+ ctx.fillStyle="#4b5144";
+ ctx.fillRect(0,480,worldW,92);ctx.fillRect(580,0,100,worldH);ctx.fillRect(1260,0,100,worldH);
+ ctx.strokeStyle="#7e826d";ctx.lineWidth=2;ctx.setLineDash([18,16]);
+ ctx.beginPath();ctx.moveTo(0,526);ctx.lineTo(worldW,526);
+ ctx.moveTo(630,0);ctx.lineTo(630,worldH);
+ ctx.moveTo(1310,0);ctx.lineTo(1310,worldH);ctx.stroke();ctx.setLineDash([]);
 
-  window.addEventListener("hashchange", function () {
-    showPage(location.hash.slice(1), false);
-  });
-
-  showPage(location.hash.slice(1) || "home", false);
-
-  // Saved profile shortcuts.
-  var KEY = "facebookWeb.shortcuts.v2";
-  var form = document.getElementById("account-form");
-  var nameInput = document.getElementById("account-name");
-  var urlInput = document.getElementById("account-url");
-  var list = document.getElementById("saved-list");
-  var message = document.getElementById("save-message");
-  var count = document.getElementById("account-count");
-
-  function checkedFacebookUrl(value) {
-    try {
-      var url = new URL(value.trim());
-      var host = url.hostname.toLowerCase();
-      var allowed = [
-        "facebook.com",
-        "www.facebook.com",
-        "m.facebook.com",
-        "web.facebook.com"
-      ];
-
-      if (url.protocol !== "https:" || !allowed.includes(host)) return null;
-      if (url.username || url.password) return null;
-      return url.href;
-    } catch (e) {
-      return null;
-    }
+ // Cover objects: solid, visible, and also used by collision checks.
+ for(const o of obstacles){
+  if(o.type==="house"){
+   ctx.fillStyle="#18231b";ctx.fillRect(o.x+7,o.y+10,o.w,o.h);
+   ctx.fillStyle="#a8aa96";ctx.fillRect(o.x,o.y,o.w,o.h);
+   ctx.fillStyle="#6f7968";ctx.fillRect(o.x+9,o.y+9,o.w-18,o.h-18);
+   ctx.fillStyle="#535e51";ctx.fillRect(o.x+18,o.y+18,o.w-36,o.h-36);
+   ctx.fillStyle="#202b22";ctx.fillRect(o.x+o.w*.42,o.y+o.h-14,o.w*.16,14);
+   ctx.fillStyle="#a9b59e";ctx.fillRect(o.x+20,o.y+20,35,5);
+   ctx.fillRect(o.x+o.w-55,o.y+20,35,5);
+  }else if(o.type==="car"){
+   ctx.fillStyle="#18231b";ctx.fillRect(o.x+4,o.y+5,o.w,o.h);
+   ctx.fillStyle="#586d64";roundRect(o.x,o.y,o.w,o.h,9);
+   ctx.fillStyle="#b2c1b4";roundRect(o.x+o.w*.24,o.y+6,o.w*.5,o.h-12,6);
+   ctx.fillStyle="#26372f";ctx.fillRect(o.x+o.w*.36,o.y+7,o.w*.26,o.h-14);
+   ctx.fillStyle="#171d19";
+   ctx.fillRect(o.x+8,o.y-3,15,5);ctx.fillRect(o.x+o.w-23,o.y-3,15,5);
+   ctx.fillRect(o.x+8,o.y+o.h-2,15,5);ctx.fillRect(o.x+o.w-23,o.y+o.h-2,15,5);
+  }else{
+   ctx.fillStyle="#1a241c";ctx.fillRect(o.x+3,o.y+4,o.w,o.h);
+   ctx.fillStyle="#727b70";ctx.fillRect(o.x,o.y,o.w,o.h);
+   ctx.fillStyle="#9aa18d";ctx.fillRect(o.x,o.y,o.w,4);
   }
+ }
+ // Projectiles
+ for(const b of bullets){
+  ctx.strokeStyle=b.playerShot?"#f6e9a5":"#ff755f";ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(b.x-b.vx*.025,b.y-b.vy*.025);ctx.lineTo(b.x,b.y);ctx.stroke();
+ }
+ // Enemies
+ for(const e of enemies){
+  if(!e.alive)continue;
+  ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.angle);
+  ctx.fillStyle="#17221b";ctx.beginPath();ctx.arc(0,0,e.r+3,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=e.flash>0?"#fff4cf":"#c75e4d";
+  ctx.beginPath();ctx.arc(0,0,e.r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#ead9b6";ctx.beginPath();ctx.arc(7,0,7,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#252a21";ctx.fillRect(9,-3,20,6);ctx.restore();
+  ctx.fillStyle="#101810";ctx.fillRect(e.x-17,e.y-27,34,4);
+  ctx.fillStyle="#ff705c";ctx.fillRect(e.x-17,e.y-27,34*clamp(e.hp/e.maxHp,0,1),4);
+ }
+ // Player character
+ ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.angle);
+ ctx.fillStyle="#111b14";ctx.beginPath();ctx.arc(0,0,player.r+4,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle=player.invuln>0?"#fff2d0":"#b9d96a";
+ ctx.beginPath();ctx.arc(0,0,player.r,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#e9e7ce";ctx.beginPath();ctx.arc(7,0,7,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#1d261b";ctx.fillRect(8,-4,28,8);
+ ctx.fillStyle="#d2e88d";ctx.fillRect(19,-2,11,4);ctx.restore();
 
-  function readAccounts() {
-    try {
-      var data = JSON.parse(localStorage.getItem(KEY) || "[]");
-      if (!Array.isArray(data)) return [];
+ for(const p of particles){
+  ctx.globalAlpha=clamp(p.life/(p.max||.3),0,1);
+  ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+ }
+ ctx.globalAlpha=1;ctx.strokeStyle="#8ca17b";ctx.lineWidth=8;
+ ctx.strokeRect(0,0,worldW,worldH);ctx.restore();
 
-      return data.filter(function (item) {
-        return item &&
-          typeof item.name === "string" &&
-          typeof item.url === "string" &&
-          checkedFacebookUrl(item.url);
-      }).slice(0, 30);
-    } catch (e) {
-      return [];
-    }
+ const grad=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.25,W/2,H/2,Math.max(W,H)*.72);
+ grad.addColorStop(0,"#0000");grad.addColorStop(1,"#0005");
+ ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+}
+
+function loop(now){
+ const dt=Math.min((now-lastTime)/1000||0,.035);
+ lastTime=now;update(dt,now);draw();requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// Touch joystick handling.
+function setupStick(id,kind){
+ const el=$(id),knob=el.querySelector(".knob");
+ let pointer=null,center={x:0,y:0},max=40;
+ function resetStick(){
+  pointer=null;knob.style.left="50%";knob.style.top="50%";
+  if(kind==="move")move={x:0,y:0};else aimStick={x:0,y:0};
+ }
+ function apply(e){
+  const dx=e.clientX-center.x,dy=e.clientY-center.y;
+  const len=Math.hypot(dx,dy),scale=Math.min(1,max/(len||1));
+  const x=dx*scale,y=dy*scale;
+  knob.style.left=`calc(50% + ${x}px)`;
+  knob.style.top=`calc(50% + ${y}px)`;
+  if(kind==="move")move={x:x/max,y:y/max};
+  else{
+   aimStick={x:x/max,y:y/max};
+   if(len>8)aim={x:dx/(len||1),y:dy/(len||1)};
   }
+ }
+ el.addEventListener("pointerdown",e=>{
+  e.preventDefault();pointer=e.pointerId;
+  const r=el.getBoundingClientRect();
+  center={x:r.left+r.width/2,y:r.top+r.height/2};
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+  apply(e);
+ });
+ el.addEventListener("pointermove",e=>{
+  if(pointer===e.pointerId){e.preventDefault();apply(e)}
+ });
+ ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>
+  el.addEventListener(ev,resetStick)
+ );
+}
+setupStick("moveStick","move");
+setupStick("aimStick","aim");
 
-  function writeAccounts(data) {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(data));
-      return true;
-    } catch (e) {
-      message.textContent = "Browser storage is unavailable. Your shortcut was not saved.";
-      return false;
-    }
-  }
+// Hold-to-fire works on touch and mouse.
+$("fire").addEventListener("pointerdown",e=>{
+ e.preventDefault();fireHeld=true;
+ try{$("fire").setPointerCapture(e.pointerId)}catch(_){}
+ shoot(performance.now());
+});
+["pointerup","pointercancel","lostpointercapture"].forEach(ev=>
+ $("fire").addEventListener(ev,()=>fireHeld=false)
+);
+$("reload").addEventListener("pointerdown",e=>{e.preventDefault();reload()});
 
-  function createButton(label, extraClass, callback, accessibleName) {
-    var button = document.createElement("button");
-    button.type = "button";
-    button.className = "mini" + (extraClass ? " " + extraClass : "");
-    button.textContent = label;
+// Desktop keyboard fallback.
+addEventListener("keydown",e=>{
+ keys[e.code]=true;
+ if(e.code==="Space"){fireHeld=true;e.preventDefault()}
+ if(e.code==="KeyR")reload();
+});
+addEventListener("keyup",e=>{
+ keys[e.code]=false;if(e.code==="Space")fireHeld=false;
+});
 
-    if (accessibleName) button.setAttribute("aria-label", accessibleName);
-    button.addEventListener("click", callback);
-    return button;
-  }
+// Tap the play area to aim and fire; joystick aim remains available.
+canvas.addEventListener("pointerdown",e=>{
+ if(!playing||e.target!==canvas)return;
+ const dx=e.clientX-W/2,dy=e.clientY-H/2,l=Math.hypot(dx,dy)||1;
+ aim={x:dx/l,y:dy/l};fireHeld=true;
+ try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+});
+["pointerup","pointercancel","lostpointercapture"].forEach(ev=>
+ canvas.addEventListener(ev,()=>fireHeld=false)
+);
 
-  function renderAccounts() {
-    var accounts = readAccounts();
-    list.replaceChildren();
-    count.textContent = accounts.length + (accounts.length === 1 ? " saved" : " saved");
-
-    if (!accounts.length) {
-      var empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = "Nothing saved yet. Add a Facebook profile link above to get started.";
-      list.appendChild(empty);
-      return;
-    }
-
-    accounts.forEach(function (account, index) {
-      var row = document.createElement("div");
-      row.className = "account";
-
-      var avatar = document.createElement("div");
-      avatar.className = "avatar";
-      avatar.textContent = account.name.trim().charAt(0).toUpperCase() || "f";
-      avatar.setAttribute("aria-hidden", "true");
-
-      var info = document.createElement("div");
-      info.className = "account-info";
-
-      var title = document.createElement("strong");
-      title.textContent = account.name;
-
-      var subtitle = document.createElement("small");
-      var parsed = new URL(account.url);
-      subtitle.textContent = parsed.hostname + parsed.pathname;
-
-      info.append(title, subtitle);
-
-      var actions = document.createElement("div");
-      actions.className = "account-buttons";
-
-      actions.appendChild(createButton("Open", "", function () {
-        window.location.href = account.url;
-      }));
-
-      actions.appendChild(createButton("×", "remove", function () {
-        var updated = readAccounts();
-        updated.splice(index, 1);
-
-        if (writeAccounts(updated)) {
-          message.textContent = "Shortcut removed.";
-          renderAccounts();
-        }
-      }, "Remove " + account.name));
-
-      row.append(avatar, info, actions);
-      list.appendChild(row);
-    });
-  }
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    var name = nameInput.value.trim();
-    var url = checkedFacebookUrl(urlInput.value);
-
-    if (!name) {
-      message.textContent = "Please enter an account name.";
-      return;
-    }
-
-    if (!url) {
-      message.textContent = "Enter a valid HTTPS Facebook profile link.";
-      return;
-    }
-
-    var accounts = readAccounts();
-
-    if (accounts.length >= 30) {
-      message.textContent = "You have reached the 30-shortcut limit.";
-      return;
-    }
-
-    accounts.push({name: name, url: url});
-
-    if (writeAccounts(accounts)) {
-      form.reset();
-      message.textContent = "Shortcut saved on this browser.";
-      renderAccounts();
-    }
-  });
-
-  renderAccounts();
+$("startBtn").addEventListener("click",()=>{
+ reset();$("startScreen").style.display="none";playing=true;
+ // Mobile browsers generally allow audio after this user gesture.
+ try{$("gunshot").load()}catch(_){}
+ toast("MISSION START");
+});
+$("againBtn").addEventListener("click",()=>{
+ $("endScreen").style.display="none";reset();playing=true;
+});
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden)fireHeld=false;
+});
+reset();
 })();
 </script>
 </body>

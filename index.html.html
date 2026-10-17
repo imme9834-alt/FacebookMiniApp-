@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,
+viewport-fit=cover">
+<meta name="theme-color" content="#edf4ff">
+<title>Connect — Social Space</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+--blue:#1877f2; --blue-dark:#0756c9; --ink:#182338;
+--muted:#7d899c; --surface:rgba(255,255,255,.82);
+--line:rgba(130,150,180,.16); --shadow:0 14px 40px rgba(37,75,130,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+margin:0;color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe
+UI",sans-serif;
+background:radial-gradient(ellipse at 5% 0%,#d9e9ff 0,transparent 36%),
+radial-gradient(ellipse at 100% 25%,#e7e2ff 0,transparent 30%),#f4f7fc;
+padding-bottom:110px;
+}
+button,a{font:inherit} a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+.wrap{width:min(100% - 28px,680px);margin:auto}
+.topbar{
+position:sticky;top:0;z-index:20;padding:calc(env(safe-area-inset-top) +
+12px) 0 12px;
+background:rgba(244,247,252,.78);backdrop-filter:blur(24px);
+-webkit-backdrop-filter:blur(24px);border-bottom:1px solid
+rgba(255,255,255,.8);
+}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{
+width:43px;height:43px;border-radius:15px;display:grid;place-items:center;
+color:white;font-size:22px;font-weight:900;background:linear-gradient(145deg,#49a1ff,#1764e8);
+box-shadow:0 8px 18px #1877f233;
+}
+.brand h1{margin:0;font-size:20px;letter-spacing:-.7px}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:11px}
+.header-actions{display:flex;gap:8px}
+.icon-btn{
+border:1px solid
+white;background:rgba(255,255,255,.75);width:42px;height:42px;
+border-radius:15px;font-size:19px;box-shadow:0 5px 18px #263e6010;
+}
+.hero{
+margin-top:20px;padding:23px;overflow:hidden;position:relative;border-radius:28px;
+color:white;background:linear-gradient(130deg,#1769e8 0%,#3999ff
+55%,#8b9dff 100%);
+box-shadow:0 18px 38px #1877f226;
+}
+.hero:after{
+content:"";position:absolute;width:190px;height:190px;border-radius:50%;
+right:-65px;top:-65px;border:32px solid #ffffff17;
+}
+.eyebrow{
+display:inline-flex;align-items:center;gap:6px;background:#ffffff25;
+padding:7px 10px;border-radius:99px;font-size:11px;font-weight:700;
+}
+.hero h2{
+position:relative;z-index:1;font-size:29px;line-height:1.12;letter-spacing:-1.1px;
+margin:17px 0 10px;max-width:390px;
+}
+.hero
+p{position:relative;z-index:1;margin:0;max-width:390px;color:#eff6ff;font-size:13px;line-height:1.65}
+.primary-btn{
+position:relative;z-index:1;margin-top:19px;display:inline-flex;justify-content:center;
+align-items:center;gap:9px;background:white;color:#1769e8;border:0;border-radius:15px;
+padding:14px 17px;font-weight:800;font-size:13px;box-shadow:0 7px 18px
+#0d4db533;
+}
+.disclaimer{font-size:10px!important;opacity:.85;margin-top:12px!important}
+.section{margin-top:25px;scroll-margin-top:100px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.section-head h2{font-size:18px;letter-spacing:-.45px;margin:0}
+.section-head span{color:var(--muted);font-size:11px}
+.shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.shortcut{
+border:1px solid
+white;background:var(--surface);border-radius:20px;min-width:0;
+padding:14px 4px 12px;text-align:center;box-shadow:0 7px 22px #243d5c08;
+transition:transform .18s ease;
+}
+.shortcut:active{transform:scale(.96)}
+.shortcut .symbol{
+width:43px;height:43px;border-radius:15px;margin:0 auto
+9px;display:grid;
+place-items:center;font-size:21px;
+}
+.shortcut b{display:block;font-size:10px}
+.blue{background:#e4efff}.purple{background:#eee8ff}.pink{background:#ffe8ef}.green{background:#e2f8ed}
+.story-row{display:flex;gap:13px;overflow-x:auto;padding:3px 1px
+8px;scrollbar-width:none}
+.story-row::-webkit-scrollbar{display:none}
+.story{min-width:66px;text-align:center}
+.story-ring{
+width:62px;height:62px;border-radius:50%;padding:3px;margin:0 auto 7px;
+background:linear-gradient(135deg,#1877f2,#a55cff,#ff8e75);
+}
+.story-ring.add{background:#dce8f8}
+.story-face{
+width:100%;height:100%;border-radius:50%;display:grid;place-items:center;font-size:25px;
+border:3px solid
+#fff;background:linear-gradient(145deg,#d9eaff,#f5e9ff);
+}
+.story
+small{display:block;font-size:10px;color:#59677c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{background:var(--surface);border:1px solid
+#fff;border-radius:23px;box-shadow:var(--shadow)}
+.composer{padding:15px}
+.composer-top{display:flex;align-items:center;gap:11px}
+.avatar{
+width:43px;height:43px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
+font-size:20px;background:linear-gradient(145deg,#dbeafe,#ede9fe);
+}
+.fake-input{
+flex:1;text-align:left;color:#7c899d;font-size:12px;background:#f3f6fb;
+border:1px solid #e9eef7;border-radius:99px;padding:13px 15px;
+}
+.composer-actions{
+display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid
+var(--line);
+margin-top:14px;padding-top:12px;
+}
+.composer-actions
+button{border:0;background:transparent;color:#64748b;font-size:10px;font-weight:700;padding:7px
+0}
+.composer-actions span{font-size:15px;margin-right:4px}
+.feed{display:grid;gap:14px}.post{overflow:hidden}
+.post-head{display:flex;align-items:center;gap:10px;padding:15px 15px
+10px}
+.post-person{flex:1;min-width:0}.post-person
+b{display:block;font-size:12px}
+.post-person
+small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+.more{border:0;background:transparent;font-size:21px;color:#8794a7}
+.post-text{padding:0 15px
+13px;font-size:12px;line-height:1.7;color:#435168}
+.artwork{
+min-height:190px;display:flex;align-items:center;justify-content:center;flex-direction:column;
+text-align:center;padding:24px;
+background:radial-gradient(circle at 15% 15%,#ffffff80,transparent 30%),
+linear-gradient(135deg,#d8eaff,#e6e2ff 55%,#ffe8ef);
+}
+.artwork .big-emoji{font-size:46px;margin-bottom:12px}
+.artwork strong{font-size:20px;letter-spacing:-.6px}
+.artwork small{font-size:11px;margin-top:7px;color:#586b8b}
+.post-stats{
+padding:12px
+15px;display:flex;justify-content:space-between;color:var(--muted);
+font-size:10px;border-bottom:1px solid var(--line);
+}
+.post-actions{display:grid;grid-template-columns:repeat(3,1fr);padding:5px}
+.post-actions button{
+background:transparent;border:0;border-radius:12px;padding:11px 2px;
+color:#66758a;font-size:11px;font-weight:700;
+}
+.post-actions button:active{background:#eaf2ff}
+.notice{
+padding:14px;font-size:11px;line-height:1.6;color:#62718a;
+background:#eaf2ff99;border:1px solid #fff;border-radius:18px;
+}
+.guide{padding:17px}.steps{display:grid;gap:12px}
+.step{display:flex;align-items:flex-start;gap:12px}
+.step-number{
+width:30px;height:30px;display:grid;place-items:center;flex-shrink:0;
+border-radius:11px;background:#e7f0ff;color:var(--blue);font-size:12px;font-weight:900;
+}
+.step b{font-size:12px;display:block;margin:2px 0 4px}
+.step p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+.link-btn{
+display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;
+border-radius:15px;margin-top:16px;color:white;
+background:linear-gradient(135deg,#1877f2,#4267df);font-size:12px;font-weight:800;
+}
+.bottom-nav{
+position:fixed;z-index:30;bottom:0;left:0;right:0;
+padding:9px 14px calc(env(safe-area-inset-bottom) + 9px);
+background:#f8faffc9;border-top:1px solid #fff;
+backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+}
+.nav-inner{width:min(100%,560px);margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.nav-item{
+border:0;background:transparent;border-radius:15px;padding:8px 2px;
+display:flex;flex-direction:column;align-items:center;gap:5px;
+color:#8591a4;font-size:9px;font-weight:700;
+}
+.nav-item
+span{font-size:19px}.nav-item.active{color:var(--blue);background:#e7f0ff}
+footer{text-align:center;margin:26px 0
+12px;color:#8995a8;font-size:10px}
+@media(min-width:600px){.hero{padding:30px}.hero
+h2{font-size:35px}.shortcut b{font-size:11px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+<div class="wrap header-row">
+<div class="brand"><div
+class="brand-icon">C</div><div><h1>Connect</h1><p>Your social
+space</p></div></div>
+<div class="header-actions">
+<button class="icon-btn" aria-label="Search"
+onclick="goFacebook()">⌕</button>
+<button class="icon-btn" aria-label="Notifications"
+onclick="goFacebook()">♧</button>
+</div>
+</div>
+</header>
+<main class="wrap">
+<section class="hero">
+<span class="eyebrow">✦ YOUR DIGITAL SPACE</span>
+<h2>Good connections.<br>Great moments.</h2>
+<p>Discover people, share your moments and stay connected. Everything
+starts with one simple step.</p>
+<button class="primary-btn" onclick="goFacebook()">Open Facebook
+<span>↗</span></button>
+<p class="disclaimer">Connect is an independent guide, not an official
+Facebook service.</p>
+</section>
+<section class="section" id="home">
+<div class="section-head"><h2>Your space</h2><span>Quick
+access</span></div>
+<div class="shortcuts">
+<a class="shortcut" href="#" onclick="goFacebook();return false"><div
+class="symbol blue">⌂</div><b>Home feed</b></a>
+<a class="shortcut" href="#"
+onclick="goFacebook('https://www.facebook.com/friends/');return
+false"><div class="symbol purple">♙</div><b>Friends</b></a>
+<a class="shortcut" href="#"
+onclick="goFacebook('https://www.facebook.com/watch/');return
+false"><div class="symbol pink">▷</div><b>Videos</b></a>
+<a class="shortcut" href="#"
+onclick="goFacebook('https://www.facebook.com/marketplace/');return
+false"><div class="symbol green">◇</div><b>Marketplace</b></a>
+</div>
+</section>
+<section class="section">
+<div class="section-head"><h2>Moments &
+stories</h2><span>Preview</span></div>
+<div class="story-row">
+<a class="story" href="#"
+onclick="goFacebook('https://www.facebook.com/stories/');return
+false"><div class="story-ring add"><div
+class="story-face">＋</div></div><small>Add story</small></a>
+<a class="story" href="#" onclick="goFacebook();return false"><div
+class="story-ring"><div class="story-face">��</div></div><small>New
+day</small></a>
+<a class="story" href="#" onclick="goFacebook();return false"><div
+class="story-ring"><div class="story-face">��</div></div><small>Good
+vibes</small></a>
+<a class="story" href="#" onclick="goFacebook();return false"><div
+class="story-ring"><div
+class="story-face">��</div></div><small>Explore</small></a>
+<a class="story" href="#" onclick="goFacebook();return false"><div
+class="story-ring"><div
+class="story-face">✨</div></div><small>Inspire</small></a>
+</div>
+</section>
+<section class="section">
+<div class="section-head"><h2>Share a moment</h2><span>Start
+here</span></div>
+<div class="card composer">
+<div class="composer-top"><div class="avatar">��</div><button
+class="fake-input" onclick="goFacebook()">What's on your
+mind?</button></div>
+<div class="composer-actions">
+<button onclick="goFacebook()"><span>▧</span> Photo</button>
+<button onclick="goFacebook()"><span>♙</span> Tag friends</button>
+<button onclick="goFacebook()"><span>☻</span> Feeling</button>
+</div>
+</div>
+</section>
+<section class="section" id="feed">
+<div class="section-head"><h2>Community highlights</h2><span>Design
+preview</span></div>
+<div class="feed">
+<article class="card post">
+<div class="post-head"><div class="avatar">��️</div><div
+class="post-person"><b>A fresh start</b><small>Sample community post ·
+Preview</small></div><button class="more" aria-label="More options"
+onclick="goFacebook()">···</button></div>
+<div class="post-text">A little progress every day can take you further
+than you imagine. Keep showing up for yourself. ✨</div>
+<div class="artwork"><div class="big-emoji">��</div><strong>Make today
+count.</strong><small>Small steps. Strong habits. Better
+days.</small></div>
+<div class="post-stats"><span>♡ A little positivity</span><span>Sample
+post</span></div>
+<div class="post-actions"><button onclick="goFacebook()">♡
+Like</button><button onclick="goFacebook()">▢ Comment</button><button
+onclick="goFacebook()">↗ Share</button></div>
+</article>
+<article class="card post">
+<div class="post-head"><div class="avatar">��</div><div
+class="post-person"><b>Daily inspiration</b><small>Sample community post
+· Preview</small></div><button class="more" aria-label="More options"
+onclick="goFacebook()">···</button></div>
+<div class="artwork"
+style="background:linear-gradient(135deg,#dff8ef,#e2ecff,#f4e6ff)"><div
+class="big-emoji">��</div><strong>Stay kind. Stay
+curious.</strong><small>Your next chapter can start today.</small></div>
+<div class="post-actions"><button onclick="goFacebook()">♡
+Like</button><button onclick="goFacebook()">▢ Comment</button><button
+onclick="goFacebook()">↗ Share</button></div>
+</article>
+</div>
+</section>
+<section class="section" id="create">
+<div class="section-head"><h2>Create your Facebook
+account</h2><span>Simple guide</span></div>
+<div class="card guide">
+<div class="steps">
+<div class="step"><div class="step-number">1</div><div><b>Open the
+official website</b><p>Use the button below to visit Facebook
+directly.</p></div></div>
+<div class="step"><div class="step-number">2</div><div><b>Choose Create
+new account</b><p>Follow Facebook's own sign-up
+instructions.</p></div></div>
+<div class="step"><div class="step-number">3</div><div><b>Enter your
+details on Facebook</b><p>Use accurate information and never share your
+password with this guide.</p></div></div>
+<div class="step"><div class="step-number">4</div><div><b>Verify and
+secure your account</b><p>Complete any verification Facebook requests
+and protect your login details.</p></div></div>
+</div>
+<button class="link-btn" onclick="goFacebook()">Continue to Facebook
+↗</button>
+</div>
+</section>
+<section class="section" id="learn">
+<div class="section-head"><h2>How to use Facebook</h2><span>Quick
+tips</span></div>
+<div class="card guide">
+<div class="steps">
+<div class="step"><div class="step-number">01</div><div><b>Explore your
+home feed</b><p>See updates from friends and pages you follow on the
+real Facebook website.</p></div></div>
+<div class="step"><div class="step-number">02</div><div><b>Connect with
+people</b><p>Find friends and send requests to people you
+know.</p></div></div>
+<div class="step"><div class="step-number">03</div><div><b>Share and
+interact</b><p>Post updates, photos and comments using Facebook's own
+controls.</p></div></div>
+<div class="step"><div class="step-number">04</div><div><b>Keep your
+account safe</b><p>Use a strong password, enable two-factor
+authentication if available, and avoid suspicious links.</p></div></div>
+</div>
+<button class="link-btn" onclick="goFacebook()">Use Facebook now
+↗</button>
+</div>
+</section>
+<div class="section notice"><b>About this preview</b><br>The stories,
+posts, likes and comments shown here are sample designs. They are not
+connected to a Facebook account. Buttons open Facebook's website, where
+the real account features are available.</div>
+<footer>Made for a cleaner social experience · Connect</footer>
+</main>
+<nav class="bottom-nav" aria-label="Main navigation">
+<div class="nav-inner">
+<button class="nav-item active"
+onclick="goSection('home',this)"><span>⌂</span>Home</button>
+<button class="nav-item"
+onclick="goFacebook('https://www.facebook.com/friends/')"><span>♙</span>Friends</button>
+<button class="nav-item"
+onclick="goSection('feed',this)"><span>▤</span>Explore</button>
+<button class="nav-item"
+onclick="goSection('learn',this)"><span>☰</span>Guide</button>
+</div>
+</nav>
+<script>
+function goFacebook(url) {
+const facebookUrl = url || "https://www.facebook.com/";
+const telegram = window.Telegram && window.Telegram.WebApp;
+if (telegram && typeof telegram.openLink === "function") {
+telegram.openLink(facebookUrl, { try_instant_view: false });
+} else {
+window.location.href = facebookUrl;
+}
+}
+function goSection(id, button) {
+const target = document.getElementById(id);
+if (target) target.scrollIntoView({ behavior: "smooth", block: "start"
+});
+document.querySelectorAll(".nav-item").forEach(item => {
+item.classList.remove("active");
+});
+if (button) button.classList.add("active");
+}
+try {
+const app = window.Telegram && window.Telegram.WebApp;
+if (app) {
+app.ready();
+app.expand();
+app.setHeaderColor("#edf4ff");
+app.setBackgroundColor("#f4f7fc");
+}
+} catch (error) {
+console.log("Telegram features are unavailable in this browser.");
+}
+</script>
+</body>
+</html>

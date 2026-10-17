@@ -1,408 +1,684 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1,
-viewport-fit=cover">
-<meta name="theme-color" content="#edf4ff">
-<title>Connect — Social Space</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef4ff">
+<meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Facebook Web</title>
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
 :root {
---blue:#1877f2; --blue-dark:#0756c9; --ink:#182338;
---muted:#7d899c; --surface:rgba(255,255,255,.82);
---line:rgba(130,150,180,.16); --shadow:0 14px 40px rgba(37,75,130,.09);
+  --blue:#0866ff;
+  --blue2:#398cff;
+  --ink:#172033;
+  --muted:#7c879a;
+  --glass:rgba(255,255,255,.68);
+  --stroke:rgba(255,255,255,.94);
+  --shadow:0 12px 38px rgba(40,70,120,.09);
+  --radius:25px;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-margin:0;color:var(--ink);
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe
-UI",sans-serif;
-background:radial-gradient(ellipse at 5% 0%,#d9e9ff 0,transparent 36%),
-radial-gradient(ellipse at 100% 25%,#e7e2ff 0,transparent 30%),#f4f7fc;
-padding-bottom:110px;
+* {box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html {min-height:100%;scroll-behavior:smooth}
+body {
+  margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  padding:calc(env(safe-area-inset-top) + 10px) 16px
+    calc(94px + env(safe-area-inset-bottom));
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
+    "Helvetica Neue",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(ellipse at 0% 0%,#d6e6ff 0%,transparent 43%),
+    radial-gradient(ellipse at 100% 22%,#e6e8ff 0%,transparent 36%),
+    linear-gradient(160deg,#f8faff,#edf3fc 75%,#f5f7fd);
+  -webkit-font-smoothing:antialiased;
 }
-button,a{font:inherit} a{color:inherit;text-decoration:none}
-button{cursor:pointer}
-.wrap{width:min(100% - 28px,680px);margin:auto}
-.topbar{
-position:sticky;top:0;z-index:20;padding:calc(env(safe-area-inset-top) +
-12px) 0 12px;
-background:rgba(244,247,252,.78);backdrop-filter:blur(24px);
--webkit-backdrop-filter:blur(24px);border-bottom:1px solid
-rgba(255,255,255,.8);
+a,button,input {font:inherit}
+a {color:inherit;text-decoration:none}
+button {cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible {
+  outline:3px solid #86b5ff;outline-offset:3px;
 }
-.header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-icon{
-width:43px;height:43px;border-radius:15px;display:grid;place-items:center;
-color:white;font-size:22px;font-weight:900;background:linear-gradient(145deg,#49a1ff,#1764e8);
-box-shadow:0 8px 18px #1877f233;
+.app {width:100%;max-width:650px;margin:auto}
+.glass {
+  border:1px solid var(--stroke);
+  background:var(--glass);
+  -webkit-backdrop-filter:blur(25px) saturate(175%);
+  backdrop-filter:blur(25px) saturate(175%);
+  box-shadow:var(--shadow);
 }
-.brand h1{margin:0;font-size:20px;letter-spacing:-.7px}
-.brand p{margin:3px 0 0;color:var(--muted);font-size:11px}
-.header-actions{display:flex;gap:8px}
-.icon-btn{
-border:1px solid
-white;background:rgba(255,255,255,.75);width:42px;height:42px;
-border-radius:15px;font-size:19px;box-shadow:0 5px 18px #263e6010;
+.topbar {
+  display:flex;align-items:center;gap:12px;
+  padding:11px 13px;border-radius:22px;
 }
-.hero{
-margin-top:20px;padding:23px;overflow:hidden;position:relative;border-radius:28px;
-color:white;background:linear-gradient(130deg,#1769e8 0%,#3999ff
-55%,#8b9dff 100%);
-box-shadow:0 18px 38px #1877f226;
+.logo {
+  display:grid;place-items:center;width:44px;height:44px;
+  flex-shrink:0;border-radius:16px;overflow:hidden;
+  color:white;background:linear-gradient(145deg,#55a0ff,#0866ff);
+  box-shadow:0 6px 18px #0866ff30;
 }
-.hero:after{
-content:"";position:absolute;width:190px;height:190px;border-radius:50%;
-right:-65px;top:-65px;border:32px solid #ffffff17;
+.logo span {font:bold 45px Arial,sans-serif;margin:10px 0 -7px}
+.brand {flex:1;min-width:0}
+.brand strong {display:block;font-size:15px;letter-spacing:-.3px}
+.brand small {display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+.live {
+  padding:8px 10px;border-radius:30px;
+  color:#267448;background:#eaf8ef;
+  font-size:10px;font-weight:750;white-space:nowrap;
 }
-.eyebrow{
-display:inline-flex;align-items:center;gap:6px;background:#ffffff25;
-padding:7px 10px;border-radius:99px;font-size:11px;font-weight:700;
+main {padding-top:18px}
+.page {display:none;animation:appear .28s ease both}
+.page.active {display:block}
+@keyframes appear {
+  from {opacity:0;transform:translateY(6px)}
+  to {opacity:1;transform:translateY(0)}
 }
-.hero h2{
-position:relative;z-index:1;font-size:29px;line-height:1.12;letter-spacing:-1.1px;
-margin:17px 0 10px;max-width:390px;
+.hero {
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:29px 23px 23px;border-radius:30px;
 }
-.hero
-p{position:relative;z-index:1;margin:0;max-width:390px;color:#eff6ff;font-size:13px;line-height:1.65}
-.primary-btn{
-position:relative;z-index:1;margin-top:19px;display:inline-flex;justify-content:center;
-align-items:center;gap:9px;background:white;color:#1769e8;border:0;border-radius:15px;
-padding:14px 17px;font-weight:800;font-size:13px;box-shadow:0 7px 18px
-#0d4db533;
+.hero:before {
+  position:absolute;z-index:-1;content:"";
+  width:240px;height:240px;right:-100px;top:-100px;
+  border-radius:50%;
+  background:radial-gradient(circle,#a9ceffb0,transparent 70%);
 }
-.disclaimer{font-size:10px!important;opacity:.85;margin-top:12px!important}
-.section{margin-top:25px;scroll-margin-top:100px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
-.section-head h2{font-size:18px;letter-spacing:-.45px;margin:0}
-.section-head span{color:var(--muted);font-size:11px}
-.shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-.shortcut{
-border:1px solid
-white;background:var(--surface);border-radius:20px;min-width:0;
-padding:14px 4px 12px;text-align:center;box-shadow:0 7px 22px #243d5c08;
-transition:transform .18s ease;
+.eyebrow {
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 11px;border-radius:30px;
+  color:#155bc5;background:#eaf2ff;
+  font-size:10px;font-weight:800;letter-spacing:.65px;
 }
-.shortcut:active{transform:scale(.96)}
-.shortcut .symbol{
-width:43px;height:43px;border-radius:15px;margin:0 auto
-9px;display:grid;
-place-items:center;font-size:21px;
+h1 {
+  margin:21px 0 13px;font-size:clamp(40px,10vw,53px);
+  line-height:.98;letter-spacing:-2.8px;font-weight:780;
 }
-.shortcut b{display:block;font-size:10px}
-.blue{background:#e4efff}.purple{background:#eee8ff}.pink{background:#ffe8ef}.green{background:#e2f8ed}
-.story-row{display:flex;gap:13px;overflow-x:auto;padding:3px 1px
-8px;scrollbar-width:none}
-.story-row::-webkit-scrollbar{display:none}
-.story{min-width:66px;text-align:center}
-.story-ring{
-width:62px;height:62px;border-radius:50%;padding:3px;margin:0 auto 7px;
-background:linear-gradient(135deg,#1877f2,#a55cff,#ff8e75);
+.blue {color:var(--blue)}
+.intro {
+  max-width:410px;margin:0;color:#657188;
+  font-size:14px;line-height:1.75;
 }
-.story-ring.add{background:#dce8f8}
-.story-face{
-width:100%;height:100%;border-radius:50%;display:grid;place-items:center;font-size:25px;
-border:3px solid
-#fff;background:linear-gradient(145deg,#d9eaff,#f5e9ff);
+.primary {
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;min-height:56px;margin-top:23px;padding:15px;
+  border:1px solid #ffffff50;border-radius:18px;
+  color:white;background:linear-gradient(130deg,#398eff,#0866ff 75%);
+  box-shadow:0 10px 25px #0866ff30;
+  font-size:14px;font-weight:750;
+  transition:transform .18s,box-shadow .18s;
 }
-.story
-small{display:block;font-size:10px;color:#59677c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card{background:var(--surface);border:1px solid
-#fff;border-radius:23px;box-shadow:var(--shadow)}
-.composer{padding:15px}
-.composer-top{display:flex;align-items:center;gap:11px}
-.avatar{
-width:43px;height:43px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
-font-size:20px;background:linear-gradient(145deg,#dbeafe,#ede9fe);
+.primary:active {transform:scale(.985);box-shadow:0 4px 12px #0866ff20}
+.arrow {margin-left:auto;font-size:20px}
+.safe-note {
+  display:flex;align-items:flex-start;gap:9px;
+  margin-top:15px;color:#7a869a;font-size:11px;line-height:1.65;
 }
-.fake-input{
-flex:1;text-align:left;color:#7c899d;font-size:12px;background:#f3f6fb;
-border:1px solid #e9eef7;border-radius:99px;padding:13px 15px;
+.heading {
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin:27px 3px 13px;
 }
-.composer-actions{
-display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid
-var(--line);
-margin-top:14px;padding-top:12px;
+.heading h2 {margin:0;font-size:17px;letter-spacing:-.4px}
+.heading small {color:var(--muted);font-size:10px}
+.grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.tile {
+  display:flex;align-items:center;gap:11px;
+  min-width:0;min-height:79px;padding:13px;border-radius:21px;
+  transition:transform .17s;
 }
-.composer-actions
-button{border:0;background:transparent;color:#64748b;font-size:10px;font-weight:700;padding:7px
-0}
-.composer-actions span{font-size:15px;margin-right:4px}
-.feed{display:grid;gap:14px}.post{overflow:hidden}
-.post-head{display:flex;align-items:center;gap:10px;padding:15px 15px
-10px}
-.post-person{flex:1;min-width:0}.post-person
-b{display:block;font-size:12px}
-.post-person
-small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
-.more{border:0;background:transparent;font-size:21px;color:#8794a7}
-.post-text{padding:0 15px
-13px;font-size:12px;line-height:1.7;color:#435168}
-.artwork{
-min-height:190px;display:flex;align-items:center;justify-content:center;flex-direction:column;
-text-align:center;padding:24px;
-background:radial-gradient(circle at 15% 15%,#ffffff80,transparent 30%),
-linear-gradient(135deg,#d8eaff,#e6e2ff 55%,#ffe8ef);
+.tile:active {transform:scale(.98)}
+.tile-icon {
+  display:grid;place-items:center;width:41px;height:41px;
+  flex-shrink:0;border-radius:15px;
+  border:1px solid #dfebff;color:#1766e9;
+  background:linear-gradient(145deg,#f8fbff,#e7f0ff);
+  font-size:19px;
 }
-.artwork .big-emoji{font-size:46px;margin-bottom:12px}
-.artwork strong{font-size:20px;letter-spacing:-.6px}
-.artwork small{font-size:11px;margin-top:7px;color:#586b8b}
-.post-stats{
-padding:12px
-15px;display:flex;justify-content:space-between;color:var(--muted);
-font-size:10px;border-bottom:1px solid var(--line);
+.tile-copy {flex:1;min-width:0}
+.tile-copy strong {display:block;font-size:12px;font-weight:740}
+.tile-copy small {display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4}
+.chevron {color:#9ba8ba;font-size:20px}
+.panel {margin-top:17px;padding:18px;border-radius:24px}
+.panel-head {display:flex;align-items:center;gap:11px}
+.panel-icon {
+  display:grid;place-items:center;width:40px;height:40px;
+  flex-shrink:0;border-radius:14px;
+  color:#1766e9;background:#eaf2ff;font-size:18px;
 }
-.post-actions{display:grid;grid-template-columns:repeat(3,1fr);padding:5px}
-.post-actions button{
-background:transparent;border:0;border-radius:12px;padding:11px 2px;
-color:#66758a;font-size:11px;font-weight:700;
+.panel-head strong {display:block;font-size:14px}
+.panel-head small {display:block;margin-top:4px;color:var(--muted);font-size:11px}
+.description {margin:12px 0 0;color:#748096;font-size:12px;line-height:1.7}
+.field-label {display:block;margin:17px 0 7px;font-size:11px;font-weight:700;color:#58667c}
+.field {
+  width:100%;min-height:47px;padding:12px 14px;
+  border:1px solid #dce5f2;border-radius:14px;
+  background:#ffffffb8;color:var(--ink);font-size:13px;
 }
-.post-actions button:active{background:#eaf2ff}
-.notice{
-padding:14px;font-size:11px;line-height:1.6;color:#62718a;
-background:#eaf2ff99;border:1px solid #fff;border-radius:18px;
+.field::placeholder {color:#a0aabc}
+.field:focus {border-color:#86b4ff;outline:none;box-shadow:0 0 0 3px #0866ff12}
+.action {
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;min-height:46px;margin-top:12px;padding:12px;
+  border:0;border-radius:15px;color:white;background:var(--blue);
+  font-size:13px;font-weight:750;
 }
-.guide{padding:17px}.steps{display:grid;gap:12px}
-.step{display:flex;align-items:flex-start;gap:12px}
-.step-number{
-width:30px;height:30px;display:grid;place-items:center;flex-shrink:0;
-border-radius:11px;background:#e7f0ff;color:var(--blue);font-size:12px;font-weight:900;
+.action.secondary {
+  color:#155ac4;background:#edf4ff;border:1px solid #dbe8ff;
 }
-.step b{font-size:12px;display:block;margin:2px 0 4px}
-.step p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
-.link-btn{
-display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;
-border-radius:15px;margin-top:16px;color:white;
-background:linear-gradient(135deg,#1877f2,#4267df);font-size:12px;font-weight:800;
+.message {min-height:17px;margin-top:10px;color:#287447;font-size:11px;line-height:1.5}
+.saved-list {display:grid;gap:9px;margin-top:14px}
+.empty {
+  padding:18px 12px;border:1px dashed #d5dfed;
+  border-radius:17px;color:#8490a3;text-align:center;
+  font-size:12px;line-height:1.65;
 }
-.bottom-nav{
-position:fixed;z-index:30;bottom:0;left:0;right:0;
-padding:9px 14px calc(env(safe-area-inset-bottom) + 9px);
-background:#f8faffc9;border-top:1px solid #fff;
-backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+.account {
+  display:flex;align-items:center;gap:10px;min-width:0;
+  padding:11px;border:1px solid #e3eaf5;
+  border-radius:17px;background:#ffffffa6;
 }
-.nav-inner{width:min(100%,560px);margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.nav-item{
-border:0;background:transparent;border-radius:15px;padding:8px 2px;
-display:flex;flex-direction:column;align-items:center;gap:5px;
-color:#8591a4;font-size:9px;font-weight:700;
+.avatar {
+  display:grid;place-items:center;width:38px;height:38px;
+  flex-shrink:0;border-radius:50%;color:#1766e9;
+  background:#e8f1ff;font-size:16px;font-weight:800;
 }
-.nav-item
-span{font-size:19px}.nav-item.active{color:var(--blue);background:#e7f0ff}
-footer{text-align:center;margin:26px 0
-12px;color:#8995a8;font-size:10px}
-@media(min-width:600px){.hero{padding:30px}.hero
-h2{font-size:35px}.shortcut b{font-size:11px}}
+.account-info {flex:1;min-width:0}
+.account-info strong {display:block;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.account-info small {display:block;overflow:hidden;margin-top:4px;color:var(--muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.account-buttons {display:flex;gap:5px;flex-shrink:0}
+.mini {
+  min-height:34px;padding:7px 9px;border:1px solid #dce8fa;
+  border-radius:11px;color:#155ac4;background:#f0f6ff;
+  font-size:11px;font-weight:700;
+}
+.mini.remove {color:#a13d4b;border-color:#f1d9dc;background:#fff4f5}
+.empty-button {
+  padding:10px 12px;border:1px solid #dce8fa;
+  border-radius:13px;color:#155ac4;background:#edf4ff;font-size:12px;
+}
+.feature-list {display:grid;gap:13px;margin-top:18px}
+.feature {display:flex;align-items:flex-start;gap:11px}
+.feature-mark {
+  display:grid;place-items:center;width:30px;height:30px;
+  flex-shrink:0;border-radius:11px;color:#1766e9;background:#eaf2ff;
+}
+.feature strong {display:block;font-size:12px}
+.feature p {margin:5px 0 0;color:#748096;font-size:11px;line-height:1.65}
+.inline-link {color:#155ac4;font-weight:750}
+.bottom-nav {
+  position:fixed;z-index:10;left:50%;
+  bottom:calc(10px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  width:min(calc(100% - 30px),450px);gap:5px;
+  padding:7px;border-radius:24px;
+  border:1px solid #ffffffd9;background:rgba(255,255,255,.79);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  backdrop-filter:blur(28px) saturate(180%);
+  box-shadow:0 10px 35px #29487520;
+}
+.nav-button {
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;min-height:51px;padding:6px;border:0;border-radius:17px;
+  color:#8490a3;background:transparent;font-size:10px;font-weight:650;
+  transition:background .2s,color .2s;
+}
+.nav-button .nav-icon {font-size:20px;line-height:1}
+.nav-button.active {color:#0866ff;background:#eaf2ff}
+footer {padding:22px 8px 0;color:#8591a5;font-size:10px;line-height:1.9;text-align:center}
+footer a {color:#526d95;font-weight:650}
+@media(min-width:560px) {
+  body {padding-left:22px;padding-right:22px}
+  .hero {padding:36px 34px 30px}
+  .grid {grid-template-columns:repeat(4,minmax(0,1fr))}
+  .tile {flex-direction:column;align-items:flex-start;min-height:120px;padding:15px}
+  .chevron {display:none}
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
+
 <body>
-<header class="topbar">
-<div class="wrap header-row">
-<div class="brand"><div
-class="brand-icon">C</div><div><h1>Connect</h1><p>Your social
-space</p></div></div>
-<div class="header-actions">
-<button class="icon-btn" aria-label="Search"
-onclick="goFacebook()">⌕</button>
-<button class="icon-btn" aria-label="Notifications"
-onclick="goFacebook()">♧</button>
+<div class="app">
+
+  <header class="topbar glass">
+    <div class="logo" aria-hidden="true"><span>f</span></div>
+    <div class="brand">
+      <strong>Facebook Web</strong>
+      <small>Your social space inside Telegram</small>
+    </div>
+    <div class="live">● Web access</div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="page active" id="page-home">
+      <div class="hero glass">
+        <div class="eyebrow">✦ YOUR SOCIAL SPACE</div>
+        <h1>Facebook,<br><span class="blue">your way.</span></h1>
+        <p class="intro">
+          Your shortcut to the real Facebook website,
+          with a cleaner interface designed for your phone.
+        </p>
+
+        <a class="primary" href="https://www.facebook.com/" target="_self">
+          Continue to Facebook <span class="arrow">↗</span>
+        </a>
+
+        <div class="safe-note">
+          <span>◈</span>
+          <span>Sign in only on the genuine Facebook website.
+          This shortcut page never asks for your password.</span>
+        </div>
+      </div>
+
+      <div class="heading">
+        <h2>Quick access</h2>
+        <small>Go straight to</small>
+      </div>
+
+      <div class="grid">
+        <a class="tile glass" href="https://www.facebook.com/" target="_self">
+          <span class="tile-icon">⌂</span>
+          <span class="tile-copy"><strong>Home</strong><small>Your news feed</small></span>
+          <span class="chevron">›</span>
+        </a>
+        <a class="tile glass" href="https://www.facebook.com/friends/" target="_self">
+          <span class="tile-icon">♧</span>
+          <span class="tile-copy"><strong>Friends</strong><small>Find your people</small></span>
+          <span class="chevron">›</span>
+        </a>
+        <a class="tile glass" href="https://www.facebook.com/messages/" target="_self">
+          <span class="tile-icon">◌</span>
+          <span class="tile-copy"><strong>Messages</strong><small>Your conversations</small></span>
+          <span class="chevron">›</span>
+        </a>
+        <a class="tile glass" href="https://www.facebook.com/marketplace/" target="_self">
+          <span class="tile-icon">▣</span>
+          <span class="tile-copy"><strong>Market</strong><small>Browse listings</small></span>
+          <span class="chevron">›</span>
+        </a>
+      </div>
+
+      <div class="panel glass">
+        <div class="panel-head">
+          <div class="panel-icon">↗</div>
+          <div>
+            <strong>New to Facebook?</strong>
+            <small>Start with the official website</small>
+          </div>
+        </div>
+        <p class="description">
+          Create an account directly on Facebook. No extra steps here.
+        </p>
+        <a class="action secondary" href="https://www.facebook.com/reg/" target="_self">
+          Create an account ↗
+        </a>
+      </div>
+
+      <footer>
+        Independent web shortcut · Not affiliated with Meta.<br>
+        <a href="https://www.facebook.com/" target="_self">facebook.com ↗</a>
+      </footer>
+    </section>
+
+    <!-- SAVED ACCOUNTS -->
+    <section class="page" id="page-saved">
+      <div class="hero glass">
+        <div class="eyebrow">✦ YOUR PERSONAL SPACE</div>
+        <h1>Saved<br><span class="blue">accounts.</span></h1>
+        <p class="intro">
+          Keep your favourite Facebook profile links together
+          and open them whenever you need them.
+        </p>
+      </div>
+
+      <div class="panel glass">
+        <div class="panel-head">
+          <div class="panel-icon">＋</div>
+          <div>
+            <strong>Add a shortcut</strong>
+            <small>Name and profile link only</small>
+          </div>
+        </div>
+
+        <form id="account-form">
+          <label class="field-label" for="account-name">Account name</label>
+          <input class="field" id="account-name" maxlength="50"
+            placeholder="My personal account" autocomplete="off" required>
+
+          <label class="field-label" for="account-url">Facebook profile URL</label>
+          <input class="field" id="account-url" type="url" inputmode="url"
+            maxlength="500" placeholder="https://www.facebook.com/..." required>
+
+          <button class="action" type="submit">＋ Save shortcut</button>
+        </form>
+        <div class="message" id="save-message" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="heading">
+        <h2>Your shortcuts</h2>
+        <small id="account-count">0 saved</small>
+      </div>
+      <div class="saved-list" id="saved-list"></div>
+
+      <div class="panel glass">
+        <div class="panel-head">
+          <div class="panel-icon">◈</div>
+          <div>
+            <strong>Privacy first</strong>
+            <small>No password storage</small>
+          </div>
+        </div>
+        <p class="description">
+          Shortcuts are saved in this browser's local storage when available.
+          They are not synced between devices. Never save passwords,
+          authentication codes or recovery codes here.
+        </p>
+      </div>
+    </section>
+
+    <!-- ABOUT / SETTINGS -->
+    <section class="page" id="page-more">
+      <div class="hero glass">
+        <div class="eyebrow">✦ SIMPLE BY DESIGN</div>
+        <h1>Made for<br><span class="blue">your flow.</span></h1>
+        <p class="intro">
+          A lightweight home for your Facebook web shortcuts,
+          with a consistent look across the pages this app controls.
+        </p>
+      </div>
+
+      <div class="panel glass">
+        <div class="panel-head">
+          <div class="panel-icon">◈</div>
+          <div>
+            <strong>About this app</strong>
+            <small>An independent shortcut, not Facebook</small>
+          </div>
+        </div>
+
+        <div class="feature-list">
+          <div class="feature">
+            <span class="feature-mark">✦</span>
+            <div>
+              <strong>Glass-inspired design</strong>
+              <p>Translucent panels, soft depth, clean typography and mobile-friendly spacing.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-mark">↗</span>
+            <div>
+              <strong>Website-first links</strong>
+              <p>Links navigate in the current view and do not deliberately call the Facebook app.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-mark">♙</span>
+            <div>
+              <strong>Local saved shortcuts</strong>
+              <p>Save profile links without collecting passwords or sign-in codes.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-mark">⌁</span>
+            <div>
+              <strong>Telegram-aware</strong>
+              <p>Uses Telegram Mini App layout features when the environment supports them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel glass">
+        <div class="panel-head">
+          <div class="panel-icon">ⓘ</div>
+          <div>
+            <strong>Browser limitations</strong>
+            <small>What this app can and cannot control</small>
+          </div>
+        </div>
+        <p class="description">
+          Facebook controls the appearance and behaviour of its actual pages.
+          Telegram, iOS or Facebook may open a different view or restrict
+          sign-in in an embedded browser. This app cannot override those rules.
+        </p>
+        <a class="action secondary" href="https://www.facebook.com/" target="_self">
+          Visit Facebook ↗
+        </a>
+      </div>
+    </section>
+  </main>
 </div>
-</div>
-</header>
-<main class="wrap">
-<section class="hero">
-<span class="eyebrow">✦ YOUR DIGITAL SPACE</span>
-<h2>Good connections.<br>Great moments.</h2>
-<p>Discover people, share your moments and stay connected. Everything
-starts with one simple step.</p>
-<button class="primary-btn" onclick="goFacebook()">Open Facebook
-<span>↗</span></button>
-<p class="disclaimer">Connect is an independent guide, not an official
-Facebook service.</p>
-</section>
-<section class="section" id="home">
-<div class="section-head"><h2>Your space</h2><span>Quick
-access</span></div>
-<div class="shortcuts">
-<a class="shortcut" href="#" onclick="goFacebook();return false"><div
-class="symbol blue">⌂</div><b>Home feed</b></a>
-<a class="shortcut" href="#"
-onclick="goFacebook('https://www.facebook.com/friends/');return
-false"><div class="symbol purple">♙</div><b>Friends</b></a>
-<a class="shortcut" href="#"
-onclick="goFacebook('https://www.facebook.com/watch/');return
-false"><div class="symbol pink">▷</div><b>Videos</b></a>
-<a class="shortcut" href="#"
-onclick="goFacebook('https://www.facebook.com/marketplace/');return
-false"><div class="symbol green">◇</div><b>Marketplace</b></a>
-</div>
-</section>
-<section class="section">
-<div class="section-head"><h2>Moments &
-stories</h2><span>Preview</span></div>
-<div class="story-row">
-<a class="story" href="#"
-onclick="goFacebook('https://www.facebook.com/stories/');return
-false"><div class="story-ring add"><div
-class="story-face">＋</div></div><small>Add story</small></a>
-<a class="story" href="#" onclick="goFacebook();return false"><div
-class="story-ring"><div class="story-face">��</div></div><small>New
-day</small></a>
-<a class="story" href="#" onclick="goFacebook();return false"><div
-class="story-ring"><div class="story-face">��</div></div><small>Good
-vibes</small></a>
-<a class="story" href="#" onclick="goFacebook();return false"><div
-class="story-ring"><div
-class="story-face">��</div></div><small>Explore</small></a>
-<a class="story" href="#" onclick="goFacebook();return false"><div
-class="story-ring"><div
-class="story-face">✨</div></div><small>Inspire</small></a>
-</div>
-</section>
-<section class="section">
-<div class="section-head"><h2>Share a moment</h2><span>Start
-here</span></div>
-<div class="card composer">
-<div class="composer-top"><div class="avatar">��</div><button
-class="fake-input" onclick="goFacebook()">What's on your
-mind?</button></div>
-<div class="composer-actions">
-<button onclick="goFacebook()"><span>▧</span> Photo</button>
-<button onclick="goFacebook()"><span>♙</span> Tag friends</button>
-<button onclick="goFacebook()"><span>☻</span> Feeling</button>
-</div>
-</div>
-</section>
-<section class="section" id="feed">
-<div class="section-head"><h2>Community highlights</h2><span>Design
-preview</span></div>
-<div class="feed">
-<article class="card post">
-<div class="post-head"><div class="avatar">��️</div><div
-class="post-person"><b>A fresh start</b><small>Sample community post ·
-Preview</small></div><button class="more" aria-label="More options"
-onclick="goFacebook()">···</button></div>
-<div class="post-text">A little progress every day can take you further
-than you imagine. Keep showing up for yourself. ✨</div>
-<div class="artwork"><div class="big-emoji">��</div><strong>Make today
-count.</strong><small>Small steps. Strong habits. Better
-days.</small></div>
-<div class="post-stats"><span>♡ A little positivity</span><span>Sample
-post</span></div>
-<div class="post-actions"><button onclick="goFacebook()">♡
-Like</button><button onclick="goFacebook()">▢ Comment</button><button
-onclick="goFacebook()">↗ Share</button></div>
-</article>
-<article class="card post">
-<div class="post-head"><div class="avatar">��</div><div
-class="post-person"><b>Daily inspiration</b><small>Sample community post
-· Preview</small></div><button class="more" aria-label="More options"
-onclick="goFacebook()">···</button></div>
-<div class="artwork"
-style="background:linear-gradient(135deg,#dff8ef,#e2ecff,#f4e6ff)"><div
-class="big-emoji">��</div><strong>Stay kind. Stay
-curious.</strong><small>Your next chapter can start today.</small></div>
-<div class="post-actions"><button onclick="goFacebook()">♡
-Like</button><button onclick="goFacebook()">▢ Comment</button><button
-onclick="goFacebook()">↗ Share</button></div>
-</article>
-</div>
-</section>
-<section class="section" id="create">
-<div class="section-head"><h2>Create your Facebook
-account</h2><span>Simple guide</span></div>
-<div class="card guide">
-<div class="steps">
-<div class="step"><div class="step-number">1</div><div><b>Open the
-official website</b><p>Use the button below to visit Facebook
-directly.</p></div></div>
-<div class="step"><div class="step-number">2</div><div><b>Choose Create
-new account</b><p>Follow Facebook's own sign-up
-instructions.</p></div></div>
-<div class="step"><div class="step-number">3</div><div><b>Enter your
-details on Facebook</b><p>Use accurate information and never share your
-password with this guide.</p></div></div>
-<div class="step"><div class="step-number">4</div><div><b>Verify and
-secure your account</b><p>Complete any verification Facebook requests
-and protect your login details.</p></div></div>
-</div>
-<button class="link-btn" onclick="goFacebook()">Continue to Facebook
-↗</button>
-</div>
-</section>
-<section class="section" id="learn">
-<div class="section-head"><h2>How to use Facebook</h2><span>Quick
-tips</span></div>
-<div class="card guide">
-<div class="steps">
-<div class="step"><div class="step-number">01</div><div><b>Explore your
-home feed</b><p>See updates from friends and pages you follow on the
-real Facebook website.</p></div></div>
-<div class="step"><div class="step-number">02</div><div><b>Connect with
-people</b><p>Find friends and send requests to people you
-know.</p></div></div>
-<div class="step"><div class="step-number">03</div><div><b>Share and
-interact</b><p>Post updates, photos and comments using Facebook's own
-controls.</p></div></div>
-<div class="step"><div class="step-number">04</div><div><b>Keep your
-account safe</b><p>Use a strong password, enable two-factor
-authentication if available, and avoid suspicious links.</p></div></div>
-</div>
-<button class="link-btn" onclick="goFacebook()">Use Facebook now
-↗</button>
-</div>
-</section>
-<div class="section notice"><b>About this preview</b><br>The stories,
-posts, likes and comments shown here are sample designs. They are not
-connected to a Facebook account. Buttons open Facebook's website, where
-the real account features are available.</div>
-<footer>Made for a cleaner social experience · Connect</footer>
-</main>
+
+<!-- GLASS BOTTOM NAVIGATION -->
 <nav class="bottom-nav" aria-label="Main navigation">
-<div class="nav-inner">
-<button class="nav-item active"
-onclick="goSection('home',this)"><span>⌂</span>Home</button>
-<button class="nav-item"
-onclick="goFacebook('https://www.facebook.com/friends/')"><span>♙</span>Friends</button>
-<button class="nav-item"
-onclick="goSection('feed',this)"><span>▤</span>Explore</button>
-<button class="nav-item"
-onclick="goSection('learn',this)"><span>☰</span>Guide</button>
-</div>
+  <button class="nav-button active" data-page="home" aria-current="page">
+    <span class="nav-icon">⌂</span><span>Home</span>
+  </button>
+  <button class="nav-button" data-page="saved">
+    <span class="nav-icon">♙</span><span>Saved</span>
+  </button>
+  <button class="nav-button" data-page="more">
+    <span class="nav-icon">⋯</span><span>More</span>
+  </button>
 </nav>
+
 <script>
-function goFacebook(url) {
-const facebookUrl = url || "https://www.facebook.com/";
-const telegram = window.Telegram && window.Telegram.WebApp;
-if (telegram && typeof telegram.openLink === "function") {
-telegram.openLink(facebookUrl, { try_instant_view: false });
-} else {
-window.location.href = facebookUrl;
-}
-}
-function goSection(id, button) {
-const target = document.getElementById(id);
-if (target) target.scrollIntoView({ behavior: "smooth", block: "start"
-});
-document.querySelectorAll(".nav-item").forEach(item => {
-item.classList.remove("active");
-});
-if (button) button.classList.add("active");
-}
-try {
-const app = window.Telegram && window.Telegram.WebApp;
-if (app) {
-app.ready();
-app.expand();
-app.setHeaderColor("#edf4ff");
-app.setBackgroundColor("#f4f7fc");
-}
-} catch (error) {
-console.log("Telegram features are unavailable in this browser.");
-}
+(function () {
+  "use strict";
+
+  // Telegram Mini App setup. The website also works outside Telegram.
+  try {
+    var tg = window.Telegram && window.Telegram.WebApp;
+    if (tg) {
+      tg.ready();
+      if (typeof tg.expand === "function") tg.expand();
+      if (typeof tg.setHeaderColor === "function") tg.setHeaderColor("#eef4ff");
+      if (typeof tg.setBackgroundColor === "function") tg.setBackgroundColor("#eef4ff");
+    }
+  } catch (e) {}
+
+  // Simple internal navigation.
+  var pageNames = ["home", "saved", "more"];
+  var navButtons = document.querySelectorAll(".nav-button");
+
+  function showPage(name, updateHash) {
+    if (pageNames.indexOf(name) === -1) name = "home";
+
+    document.querySelectorAll(".page").forEach(function (page) {
+      page.classList.toggle("active", page.id === "page-" + name);
+    });
+
+    navButtons.forEach(function (button) {
+      var active = button.dataset.page === name;
+      button.classList.toggle("active", active);
+
+      if (active) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    });
+
+    if (updateHash && location.hash !== "#" + name) {
+      history.replaceState(null, "", "#" + name);
+    }
+
+    window.scrollTo({top: 0, behavior: "smooth"});
+  }
+
+  navButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      showPage(button.dataset.page, true);
+    });
+  });
+
+  window.addEventListener("hashchange", function () {
+    showPage(location.hash.slice(1), false);
+  });
+
+  showPage(location.hash.slice(1) || "home", false);
+
+  // Saved profile shortcuts.
+  var KEY = "facebookWeb.shortcuts.v2";
+  var form = document.getElementById("account-form");
+  var nameInput = document.getElementById("account-name");
+  var urlInput = document.getElementById("account-url");
+  var list = document.getElementById("saved-list");
+  var message = document.getElementById("save-message");
+  var count = document.getElementById("account-count");
+
+  function checkedFacebookUrl(value) {
+    try {
+      var url = new URL(value.trim());
+      var host = url.hostname.toLowerCase();
+      var allowed = [
+        "facebook.com",
+        "www.facebook.com",
+        "m.facebook.com",
+        "web.facebook.com"
+      ];
+
+      if (url.protocol !== "https:" || !allowed.includes(host)) return null;
+      if (url.username || url.password) return null;
+      return url.href;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function readAccounts() {
+    try {
+      var data = JSON.parse(localStorage.getItem(KEY) || "[]");
+      if (!Array.isArray(data)) return [];
+
+      return data.filter(function (item) {
+        return item &&
+          typeof item.name === "string" &&
+          typeof item.url === "string" &&
+          checkedFacebookUrl(item.url);
+      }).slice(0, 30);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeAccounts(data) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(data));
+      return true;
+    } catch (e) {
+      message.textContent = "Browser storage is unavailable. Your shortcut was not saved.";
+      return false;
+    }
+  }
+
+  function createButton(label, extraClass, callback, accessibleName) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "mini" + (extraClass ? " " + extraClass : "");
+    button.textContent = label;
+
+    if (accessibleName) button.setAttribute("aria-label", accessibleName);
+    button.addEventListener("click", callback);
+    return button;
+  }
+
+  function renderAccounts() {
+    var accounts = readAccounts();
+    list.replaceChildren();
+    count.textContent = accounts.length + (accounts.length === 1 ? " saved" : " saved");
+
+    if (!accounts.length) {
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "Nothing saved yet. Add a Facebook profile link above to get started.";
+      list.appendChild(empty);
+      return;
+    }
+
+    accounts.forEach(function (account, index) {
+      var row = document.createElement("div");
+      row.className = "account";
+
+      var avatar = document.createElement("div");
+      avatar.className = "avatar";
+      avatar.textContent = account.name.trim().charAt(0).toUpperCase() || "f";
+      avatar.setAttribute("aria-hidden", "true");
+
+      var info = document.createElement("div");
+      info.className = "account-info";
+
+      var title = document.createElement("strong");
+      title.textContent = account.name;
+
+      var subtitle = document.createElement("small");
+      var parsed = new URL(account.url);
+      subtitle.textContent = parsed.hostname + parsed.pathname;
+
+      info.append(title, subtitle);
+
+      var actions = document.createElement("div");
+      actions.className = "account-buttons";
+
+      actions.appendChild(createButton("Open", "", function () {
+        window.location.href = account.url;
+      }));
+
+      actions.appendChild(createButton("×", "remove", function () {
+        var updated = readAccounts();
+        updated.splice(index, 1);
+
+        if (writeAccounts(updated)) {
+          message.textContent = "Shortcut removed.";
+          renderAccounts();
+        }
+      }, "Remove " + account.name));
+
+      row.append(avatar, info, actions);
+      list.appendChild(row);
+    });
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var name = nameInput.value.trim();
+    var url = checkedFacebookUrl(urlInput.value);
+
+    if (!name) {
+      message.textContent = "Please enter an account name.";
+      return;
+    }
+
+    if (!url) {
+      message.textContent = "Enter a valid HTTPS Facebook profile link.";
+      return;
+    }
+
+    var accounts = readAccounts();
+
+    if (accounts.length >= 30) {
+      message.textContent = "You have reached the 30-shortcut limit.";
+      return;
+    }
+
+    accounts.push({name: name, url: url});
+
+    if (writeAccounts(accounts)) {
+      form.reset();
+      message.textContent = "Shortcut saved on this browser.";
+      renderAccounts();
+    }
+  });
+
+  renderAccounts();
+})();
 </script>
 </body>
 </html>
